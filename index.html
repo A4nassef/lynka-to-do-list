@@ -9,29 +9,40 @@
   <style>
     :root{
       --bg:#E6F2FA; --text:#0f172a; --muted:#6b7280;
-      --card:#ffffffcc; --line:#dfe5ee;
-      --accent:#5b6cff; --accent2:#19c6d1; --danger:#ef4444;
+      --card:#ffffffcc; --line:#dfe5ee; --danger:#ef4444;
       --shadow:0 10px 30px rgba(2,6,23,.08);
+      /* ألوان افتراضية (تتغير لكل تبويب عبر المتغيرات المحلية) */
+      --accent:#5b6cff; --accent2:#19c6d1;
     }
     *{box-sizing:border-box}
-    body{margin:0;font-family:ui-rounded,system-ui,-apple-system,"Segoe UI",Roboto,Arial,"Noto Kufi Arabic","Noto Sans Arabic",sans-serif;color:var(--text);background:var(--bg)}
-    header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,rgba(255,255,255,.85),rgba(255,255,255,.65));backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
-    .container{max-width:980px;margin:0 auto;padding:16px}
-    .brand{display:flex;align-items:center;justify-content:space-between;gap:12px}
-    .brand-left{display:flex;align-items:center;gap:12px}
-    .logo{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-weight:800;color:#fff;box-shadow:var(--shadow);overflow:hidden}
-    .logo img{width:100%;height:100%;object-fit:cover;display:block}
-    h1{margin:0;font-size:clamp(20px,3.5vw,28px)}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-.tab{border:1px solid var(--line);background:#fff;padding:10px 14px;border-radius:12px;cursor:pointer;font-weight:600}
-.tab.active{color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent2));border-color:transparent}
+    body{margin:0;font-family:ui-rounded,system-ui,-apple-system,"Segoe UI",Roboto,Arial,"Noto Kufi Arabic","Noto Sans Arabic",sans-serif;color:var(--text);background:var(--bg)}/* Header */
+header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,rgba(255,255,255,.85),rgba(255,255,255,.65));backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.container{max-width:1100px;margin:0 auto;padding:16px}
+.brand{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand-left{display:flex;align-items:center;gap:12px}
+.logo{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#5b6cff,#19c6d1);display:grid;place-items:center;font-weight:800;color:#fff;box-shadow:var(--shadow);overflow:hidden}
+.logo img{width:100%;height:100%;object-fit:cover;display:block}
+h1{margin:0;font-size:clamp(18px,3.2vw,26px)}
+
+.userbox{display:flex;align-items:center;gap:10px}
+.userbox .email{font-size:13px;color:var(--muted);background:#fff;border:1px solid var(--line);padding:6px 10px;border-radius:999px}
+.logout{border:0;padding:10px 12px;border-radius:12px;cursor:pointer;font-weight:600;background:#fff;border:1px solid var(--line)}
+
+/* Tabs */
+.tabs{display:flex;gap:10px;flex-wrap:wrap;margin:10px auto 0}
+.tab{position:relative;border:1px solid var(--line);background:#fff;padding:10px 14px;border-radius:12px;cursor:pointer;font-weight:700}
+.tab.active{color:#fff;border-color:transparent}
+.tab[data-tab="todo"].active{background:linear-gradient(135deg,#4f46e5,#22d3ee)}
+.tab[data-tab="prices"].active{background:linear-gradient(135deg,#059669,#34d399)}
+.tab[data-tab="orders"].active{background:linear-gradient(135deg,#7c3aed,#f59e0b)}
 
 .card{margin:16px 0;padding:18px;background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
 
 .row{display:flex;gap:8px;flex-wrap:wrap}
 .input{flex:1;min-width:180px;background:#fff;border:1px solid var(--line);color:var(--text);padding:12px 14px;border-radius:12px;outline:none;transition:border .2s,box-shadow .2s}
-.input:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(91,108,255,.12)}
+.input:focus{border-color:var(--accent);box-shadow:0 0 0 4px color-mix(in oklab, var(--accent) 18%, transparent)}
 
-.btn{border:0;padding:12px 14px;border-radius:12px;cursor:pointer;font-weight:600;transition:transform .08s ease}
+.btn{border:0;padding:12px 14px;border-radius:12px;cursor:pointer;font-weight:700;transition:transform .08s ease}
 .btn:active{transform:translateY(1px)}
 .btn-primary{color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent2))}
 .btn-ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
@@ -47,7 +58,7 @@ li.item:hover{box-shadow:0 8px 24px rgba(2,6,23,.08)}
 
 .checkbox{appearance:none;width:22px;height:22px;border-radius:6px;border:2px solid rgba(100,116,139,.6);display:grid;place-items:center;transition:all .18s ease}
 .checkbox::after{content:"";width:12px;height:12px;border-radius:3px;transform:scale(0);background:linear-gradient(135deg,var(--accent),var(--accent2));transition:transform .18s ease}
-.checkbox:checked{border-color:transparent;background:rgba(99,102,241,.18)}
+.checkbox:checked{border-color:transparent;background:color-mix(in oklab, var(--accent) 18%, transparent)}
 .checkbox:checked::after{transform:scale(1)}
 
 .text{flex:1;word-break:break-word}
@@ -58,7 +69,6 @@ time{font-size:12px;color:var(--muted)}
 @media(min-width:860px){.grid{grid-template-columns:1fr 1fr}}
 .divider{height:1px;background:var(--line);margin:6px 0 10px}
 
-/* جداول بسيطة للأسعار والأوردرات */
 table{width:100%;border-collapse:separate;border-spacing:0 8px}
 th,td{text-align:right;padding:12px;background:#fff;border:1px solid var(--line)}
 th{background:#f9fbff}
@@ -68,14 +78,37 @@ tr td:last-child, tr th:last-child{border-top-left-radius:12px;border-bottom-lef
 
 .hidden{display:none}
 
+/* Auth gate */
+#authGate{position:fixed;inset:0;display:grid;place-items:center;background:linear-gradient(180deg,rgba(230,242,250,.85),rgba(230,242,250,.65));backdrop-filter:blur(8px)}
+.auth-card{width:min(94%,420px);background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:18px}
+.auth-card h2{margin:0 0 8px}
+.auth-row{display:flex;flex-direction:column;gap:8px;margin:12px 0}
+.err{color:#b91c1c;font-size:13px;min-height:18px}
+
   </style>
 </head>
 <body>
-  <header>
+  <!-- Auth overlay (Email/Password) -->
+  <div id="authGate">
+    <div class="auth-card">
+      <h2>تسجيل دخول Lynka</h2>
+      <div class="auth-row">
+        <input id="authEmail" class="input" type="email" placeholder="الإيميل" autocomplete="username" />
+        <input id="authPass" class="input" type="password" placeholder="كلمة السر" autocomplete="current-password" />
+        <button id="authBtn" class="btn btn-primary">دخول</button>
+        <div id="authErr" class="err"></div>
+        <div class="muted">استخدم حساب: 1@lynka.com أو 2@lynka.com</div>
+      </div>
+    </div>
+  </div>  <header>
     <div class="container brand">
       <div class="brand-left">
         <div class="logo" id="logoSlot"><span>L</span></div>
         <h1>Lynka — لوحة الإدارة</h1>
+      </div>
+      <div class="userbox">
+        <span id="userEmail" class="email" style="display:none"></span>
+        <button id="logoutBtn" class="logout" style="display:none">تسجيل الخروج</button>
       </div>
     </div>
     <div class="container tabs" id="tabs">
@@ -83,9 +116,9 @@ tr td:last-child, tr th:last-child{border-top-left-radius:12px;border-bottom-lef
       <button class="tab" data-tab="prices">الأسعار</button>
       <button class="tab" data-tab="orders">الأوردرات</button>
     </div>
-  </header>  <main class="container">
-    <!-- TAB: TODO -->
-    <section id="tab-todo" class="card">
+  </header>  <main class="container" id="appRoot" style="display:none">
+    <!-- TAB: TODO (ألوان بنفسجي/سماوي) -->
+    <section id="tab-todo" class="card" style="--accent:#4f46e5; --accent2:#22d3ee;">
       <div class="row" style="margin-bottom:12px">
         <input id="taskInput" class="input" placeholder="اكتب مهمة واضغط إضافة أو Enter" />
         <button id="addTaskBtn" class="btn btn-primary">إضافة</button>
@@ -102,8 +135,8 @@ tr td:last-child, tr th:last-child{border-top-left-radius:12px;border-bottom-lef
           <ul id="listDone"></ul>
         </div>
       </div>
-    </section><!-- TAB: PRICES -->
-<section id="tab-prices" class="card hidden">
+    </section><!-- TAB: PRICES (ألوان أخضر) -->
+<section id="tab-prices" class="card hidden" style="--accent:#059669; --accent2:#34d399;">
   <div class="row" style="margin-bottom:12px">
     <input id="productName" class="input" placeholder="اسم المنتج" />
     <input id="productPrice" class="input" type="number" step="0.01" placeholder="السعر" />
@@ -118,8 +151,8 @@ tr td:last-child, tr th:last-child{border-top-left-radius:12px;border-bottom-lef
   </table>
 </section>
 
-<!-- TAB: ORDERS -->
-<section id="tab-orders" class="card hidden">
+<!-- TAB: ORDERS (ألوان بنفسجي/برتقالي) -->
+<section id="tab-orders" class="card hidden" style="--accent:#7c3aed; --accent2:#f59e0b;">
   <div class="row" style="margin-bottom:12px">
     <input id="orderTitle" class="input" placeholder="اسم/رقم الأوردر" />
     <input id="orderTotal" class="input" type="number" step="0.01" placeholder="الإجمالي (اختياري)" />
@@ -134,8 +167,7 @@ tr td:last-child, tr th:last-child{border-top-left-radius:12px;border-bottom-lef
   </table>
 </section>
 
-  </main>  <!-- Firebase compat SDKs -->  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>  <script>
-    // 🔧 بيانات مشروعك (كما استخدمناها سابقًا)
+  </main>  <!-- Firebase compat SDKs -->  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>  <script>
     const firebaseConfig = {
       apiKey: "AIzaSyCnM6-7BoICLWAXUeH8qz8A_OCicGpQtMU",
       authDomain: "lynka-to-do-list-eb2ac.firebaseapp.com",
@@ -146,18 +178,55 @@ tr td:last-child, tr th:last-child{border-top-left-radius:12px;border-bottom-lef
     };
 
     firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
     const db = firebase.firestore();
+
+    // ---------- Auth Gate ----------
+    const authGate = document.getElementById('authGate');
+    const appRoot  = document.getElementById('appRoot');
+    const emailEl  = document.getElementById('authEmail');
+    const passEl   = document.getElementById('authPass');
+    const authBtn  = document.getElementById('authBtn');
+    const authErr  = document.getElementById('authErr');
+    const userEmailBadge = document.getElementById('userEmail');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    auth.onAuthStateChanged((user)=>{
+      if(user){
+        authGate.style.display='none';
+        appRoot.style.display='block';
+        userEmailBadge.textContent = user.email;
+        userEmailBadge.style.display = 'inline-block';
+        logoutBtn.style.display = 'inline-block';
+      } else {
+        appRoot.style.display='none';
+        authGate.style.display='grid';
+        userEmailBadge.style.display = 'none';
+        logoutBtn.style.display = 'none';
+      }
+    });
+
+    logoutBtn.addEventListener('click', ()=> auth.signOut());
+
+    authBtn.addEventListener('click', async ()=>{
+      authErr.textContent='';
+      const email = (emailEl.value||'').trim();
+      const pass  = passEl.value||'';
+      if(!email || !pass){ authErr.textContent = 'ادخل الإيميل وكلمة السر'; return; }
+      try{ await auth.signInWithEmailAndPassword(email, pass); }
+      catch(e){
+        if(e.code==='auth/user-not-found')      authErr.textContent = 'الحساب غير موجود. أضِفه من Firebase → Authentication.';
+        else if(e.code==='auth/wrong-password') authErr.textContent = 'كلمة السر غير صحيحة.';
+        else if(e.code==='auth/invalid-email')  authErr.textContent = 'صيغة الإيميل غير صحيحة.';
+        else                                     authErr.textContent = 'خطأ: '+ e.message;
+      }
+    });
 
     // ---------------- Tabs ----------------
     const tabsEl = document.getElementById('tabs');
-    const sections = {
-      todo: document.getElementById('tab-todo'),
-      prices: document.getElementById('tab-prices'),
-      orders: document.getElementById('tab-orders')
-    };
+    const sections = { todo:document.getElementById('tab-todo'), prices:document.getElementById('tab-prices'), orders:document.getElementById('tab-orders') };
     tabsEl.addEventListener('click', (e)=>{
-      const btn = e.target.closest('.tab');
-      if(!btn) return;
+      const btn = e.target.closest('.tab'); if(!btn) return;
       tabsEl.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
       btn.classList.add('active');
       const key = btn.dataset.tab;
@@ -177,7 +246,7 @@ tr td:last-child, tr th:last-child{border-top-left-radius:12px;border-bottom-lef
     async function addTask(){
       const text = (taskInput.value||'').trim();
       if(!text) return;
-      await tasksRef.add({ text, done:false, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+      await tasksRef.add({ text, done:false, createdAt: firebase.firestore.FieldValue.serverTimestamp(), uid: auth.currentUser?.uid || null });
       taskInput.value=''; taskInput.focus();
     }
     addTaskBtn.addEventListener('click', addTask);
@@ -225,7 +294,7 @@ tr td:last-child, tr th:last-child{border-top-left-radius:12px;border-bottom-lef
       const name = (productName.value||'').trim();
       const price = parseFloat(productPrice.value);
       if(!name || isNaN(price)) return;
-      await productsRef.add({ name, price, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+      await productsRef.add({ name, price, createdAt: firebase.firestore.FieldValue.serverTimestamp(), uid: auth.currentUser?.uid || null });
       productName.value=''; productPrice.value='';
     }
     addProductBtn.addEventListener('click', addProduct);
@@ -261,7 +330,7 @@ tr td:last-child, tr th:last-child{border-top-left-radius:12px;border-bottom-lef
       const title = (orderTitle.value||'').trim();
       const total = orderTotal.value ? parseFloat(orderTotal.value) : null;
       if(!title) return;
-      await ordersRef.add({ title, total, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+      await ordersRef.add({ title, total, createdAt: firebase.firestore.FieldValue.serverTimestamp(), uid: auth.currentUser?.uid || null });
       orderTitle.value=''; orderTotal.value='';
     }
     addOrderBtn.addEventListener('click', addOrder);
@@ -286,7 +355,7 @@ tr td:last-child, tr th:last-child{border-top-left-radius:12px;border-bottom-lef
       snap.docs.forEach(doc=> ordersBody.appendChild(orderRow(doc)) );
     });
 
-    // (اختياري) لوجو الشركة: ارفع logo.png في نفس الريبو وسيظهر تلقائيًا
+    // لوجو (اختياري)
     (function(){
       const slot = document.getElementById('logoSlot');
       const img = new Image();
