@@ -7,38 +7,35 @@
   <meta name="color-scheme" content="light dark">
   <style>
     :root{
-      --bg: #f5f7fb;
-      --text:#0f172a;
-      --muted:#6b7280;
-      --card:#ffffff;
-      --line:#e6e8ee;
-      --accent:#6366f1;   /* indigo */
-      --accent-2:#22d3ee; /* cyan */
-      --danger:#ef4444;
-      --shadow: 0 12px 36px rgba(2,6,23,.06);
-    }
-    @media (prefers-color-scheme: dark){
-      :root{--bg:#0b1220;--text:#e5e7eb;--muted:#9aa4b2;--card:#0f172a;--line:#1c253d;--shadow:0 18px 44px rgba(0,0,0,.35)}
+      /* لوحة هادئة محترفة */
+      --bg: #E6F2FA;        /* أزرق سماوي فاتح جدًا */
+      --text:#0f172a;       /* نص داكن مريح */
+      --muted:#6b7280;      /* نص ثانوي */
+      --card:#ffffffcc;     /* بطاقة شفافة خفيفة */
+      --line:#dfe5ee;       /* حدود رقيقة */
+      --accent:#5b6cff;     /* Indigo */
+      --accent-2:#19c6d1;   /* Cyan */
+      --danger:#ef4444;     /* حذف */
+      --shadow: 0 10px 30px rgba(2,6,23,.08);
     }
 
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
-      margin:0; font-family:ui-rounded,system-ui,-apple-system,"Segoe UI",Roboto,Arial,"Noto Kufi Arabic","Noto Sans Arabic",sans-serif; color:var(--text);
-      background:radial-gradient(900px 480px at 85% -10%, rgba(99,102,241,.10), transparent 60%),
-                 radial-gradient(800px 460px at -10% 10%, rgba(34,211,238,.08), transparent 60%), var(--bg);
+      margin:0; font-family: ui-rounded, system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Kufi Arabic", "Noto Sans Arabic", sans-serif;
+      color:var(--text); background:var(--bg);
     }
 
-    header{position:sticky; top:0; z-index:10; background:linear-gradient(180deg, rgba(255,255,255,.85), rgba(255,255,255,.65)); backdrop-filter: blur(10px); border-bottom:1px solid var(--line)}
-    @media (prefers-color-scheme: dark){header{background:linear-gradient(180deg, rgba(11,18,32,.85), rgba(11,18,32,.55));}}
+    /* Header */
+    header{position:sticky; top:0; z-index:10; background:linear-gradient(180deg, rgba(255,255,255,.85), rgba(255,255,255,.65)); backdrop-filter: blur(8px); border-bottom:1px solid var(--line)}
     .container{max-width:980px; margin:0 auto; padding:16px}
     .brand{display:flex; align-items:center; justify-content:space-between; gap:12px}
     .brand-left{display:flex; align-items:center; gap:12px}
     .logo{width:44px; height:44px; border-radius:12px; background:linear-gradient(135deg, var(--accent), var(--accent-2)); display:grid; place-items:center; font-weight:800; color:#fff; box-shadow:var(--shadow); overflow:hidden}
     .logo img{width:100%; height:100%; object-fit:cover; display:block}
     .brand h1{margin:0; font-size:clamp(20px, 3.5vw, 28px)}
-    .pill{padding:6px 10px; border-radius:999px; font-size:12px; color:#fff; background:linear-gradient(135deg, var(--accent-2), var(--accent)); opacity:.9}
 
+    /* App Card */
     .app{margin:24px auto; padding:18px; background:var(--card); border:1px solid var(--line); border-radius:18px; box-shadow:var(--shadow)}
 
     .grid{display:grid; grid-template-columns:1fr; gap:16px}
@@ -46,8 +43,7 @@
 
     .row{display:flex; gap:8px; flex-wrap:wrap}
     .input{flex:1; min-width:220px; background:#fff; border:1px solid var(--line); color:var(--text); padding:12px 14px; border-radius:12px; outline:none; transition:border .2s, box-shadow .2s}
-    .input:focus{border-color:var(--accent); box-shadow:0 0 0 4px rgba(99,102,241,.12)}
-    @media (prefers-color-scheme: dark){.input{background:#0b1220}}
+    .input:focus{border-color:var(--accent); box-shadow:0 0 0 4px rgba(91,108,255,.12)}
 
     .btn{border:0; padding:12px 14px; border-radius:12px; cursor:pointer; font-weight:600; transition: transform .08s ease}
     .btn:active{transform: translateY(1px)}
@@ -61,12 +57,11 @@
 
     ul{list-style:none; padding:0; margin:12px 0 0}
     li.task{display:flex; align-items:center; gap:12px; padding:14px; margin:10px 0; background:#fff; border:1px solid var(--line); border-radius:14px; transition: box-shadow .2s}
-    li.task:hover{box-shadow:0 8px 24px rgba(2,6,23,.06)}
-    @media (prefers-color-scheme: dark){li.task{background:#0b1220}}
+    li.task:hover{box-shadow:0 8px 24px rgba(2,6,23,.08)}
 
     .task input[type="checkbox"]{appearance:none; width:22px; height:22px; border-radius:6px; border:2px solid rgba(100,116,139,.6); display:grid; place-items:center; transition:all .18s ease}
     .task input[type="checkbox"]::after{content:""; width:12px; height:12px; border-radius:3px; transform: scale(0); background:linear-gradient(135deg, var(--accent), var(--accent-2)); transition: transform .18s ease}
-    .task input[type="checkbox"]:checked{border-color:transparent; background:rgba(99,102,241,.15)}
+    .task input[type="checkbox"]:checked{border-color:transparent; background:rgba(99,102,241,.18)}
     .task input[type="checkbox"]:checked::after{transform: scale(1)}
 
     .task .text{flex:1; word-break:break-word}
@@ -84,7 +79,6 @@
         <div class="logo" id="logoSlot"><span>L</span></div>
         <h1>lynka to do list</h1>
       </div>
-      <div class="pill">متزامنة لحظيًا</div>
     </div>
   </header>
 
@@ -121,6 +115,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
 
   <script>
+    // Firebase config الخاص بمشروعك
     const firebaseConfig = {
       apiKey: "AIzaSyCnM6-7BoICLWAXUeH8qz8A_OCicGpQtMU",
       authDomain: "lynka-to-do-list-eb2ac.firebaseapp.com",
@@ -203,12 +198,11 @@
       countDone.textContent = d + ' مُنجزة';
     });
 
-    // لوجو الشركة اختياري: ارفع ملف باسم logo.png في نفس الريبو وسيظهر بدل حرف L تلقائيًا
+    // اللوجو (اختياري): ارفع logo.png في نفس الريبو وسيظهر تلقائيًا
     (function(){
       const logoEl = document.getElementById('logoSlot');
       const img = new Image();
       img.onload = ()=>{ logoEl.innerHTML=''; logoEl.appendChild(img); };
-      img.onerror = ()=>{};
       img.src = 'logo.png';
       img.alt = 'logo';
     })();
@@ -217,50 +211,15 @@
 </html>
 
 
-معاك—اللي حصل إنك غالبًا نسخت رسالة فيها سطور غريبة (زي updates: [{...) بدل ما تنسخ ملف الـ HTML فقط، فظهرتلك علامات n\\ وتكرار الصفحة. صلّحها في دقيقتين:
+اتعملت 👌
+غيّرت الخلفية لأزرق سماوي فاتح جدًا، شلت الكلام اللي تحت كله، وثبّتّ التنسيق الهادئ الاحترافي. كمان لسه عندك القائمتين (نشطة/مُنجزة) مع تحديد/إلغاء التحديد والحذف.
 
-إصلاح ملف الموقع
+تعمل إيه دلوقتي؟
 
-1. افتح ريبو GitHub → Code → index.html.
+افتح index.html في الريبو → Edit → انسخ الكود الجديد من الكانڤاس والصقه → Commit.
 
-
-2. اضغط Edit (علامة القلم).
-
-
-3. حدد كل المحتوى واعمله Delete.
+افتح موقعك: https://a4nassef.github.io/lynka-to-do-list/ وحدّث الصفحة.
 
 
-4. من الكانڤاس على يمين الشات، انسخ الملف “index.html (الإصدار المنسّق)” اللي لسه حدّثته لك دلوقتي، والصقه مكانه.
-
-
-5. اضغط Commit changes.
-
-
-6. افتح موقعك تاني مع تحديث قوي:
-
-https://a4nassef.github.io/lynka-to-do-list/?v=2
-
-
-
-الشكل الجديد
-
-ألوان هادئة وبروفشنال (Indigo + Cyan خفيف).
-
-كارت أنيق، وأنيميشِن بسيط للـ checkbox.
-
-قائمتان: نشطة ومُنجزة. تقدر ترجع المُنجزة بإلغاء العلامة، أو تمسحها.
-
-مفيش أي فوتر/تعليقات تحت.
-
-
-اللوجو
-
-لو عندك لوجو:
-
-في الريبو اضغط Add file → Upload files وارفع ملف باسم logo.png (خلفية شفافة يفضَّل).
-
-الصفحة هتلتقطه تلقائيًا وتستبدل حرف L في الهيدر باللوجو.
-
-
-لو تحب أبدّل الألوان/الحجم/الخطوط على ذوقك، أو تحبّ لوجو باسم مختلف، قولهولي وعدّلهولك فورًا.
+لو عندك لوجو، ارفعه في الريبو باسم logo.png وهيظهر تلقائيًا بدل حرف L في الهيدر.
 
