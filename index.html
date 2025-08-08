@@ -1,18 +1,17 @@
-
-
 <!doctype html>
+
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>lynka to do list</title>
+  <title>Lynka — لوحة الإدارة</title>
   <meta name="color-scheme" content="light dark">
   <style>
     :root{
       --bg:#E6F2FA; --text:#0f172a; --muted:#6b7280;
       --card:#ffffffcc; --line:#dfe5ee;
-      --accent:#5b6cff; --accent2:#19c6d1;
-      --danger:#ef4444; --shadow:0 10px 30px rgba(2,6,23,.08);
+      --accent:#5b6cff; --accent2:#19c6d1; --danger:#ef4444;
+      --shadow:0 10px 30px rgba(2,6,23,.08);
     }
     *{box-sizing:border-box}
     body{margin:0;font-family:ui-rounded,system-ui,-apple-system,"Segoe UI",Roboto,Arial,"Noto Kufi Arabic","Noto Sans Arabic",sans-serif;color:var(--text);background:var(--bg)}
@@ -22,33 +21,53 @@
     .brand-left{display:flex;align-items:center;gap:12px}
     .logo{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-weight:800;color:#fff;box-shadow:var(--shadow);overflow:hidden}
     .logo img{width:100%;height:100%;object-fit:cover;display:block}
-    h1{margin:0;font-size:clamp(20px,3.5vw,28px)}
-    .app{margin:24px auto;padding:18px;background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
-    .grid{display:grid;grid-template-columns:1fr;gap:16px}
-    @media(min-width:860px){.grid{grid-template-columns:1fr 1fr}}
-    .row{display:flex;gap:8px;flex-wrap:wrap}
-    .input{flex:1;min-width:220px;background:#fff;border:1px solid var(--line);color:var(--text);padding:12px 14px;border-radius:12px;outline:none;transition:border .2s,box-shadow .2s}
-    .input:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(91,108,255,.12)}
-    .btn{border:0;padding:12px 14px;border-radius:12px;cursor:pointer;font-weight:600;transition:transform .08s ease}
-    .btn:active{transform:translateY(1px)}
-    .btn-primary{color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent2))}
-    .btn-ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
-    .btn-danger{background:linear-gradient(135deg,#f87171,#ef4444);color:#fff}
-    .section-title{display:flex;align-items:center;justify-content:space-between;margin:0 0 8px}
-    .section-title h3{margin:0;font-size:18px}
-    .muted{color:var(--muted);font-size:13px}
-    ul{list-style:none;padding:0;margin:12px 0 0}
-    li.task{display:flex;align-items:center;gap:12px;padding:14px;margin:10px 0;background:#fff;border:1px solid var(--line);border-radius:14px;transition:box-shadow .2s}
-    li.task:hover{box-shadow:0 8px 24px rgba(2,6,23,.08)}
-    .task input[type="checkbox"]{appearance:none;width:22px;height:22px;border-radius:6px;border:2px solid rgba(100,116,139,.6);display:grid;place-items:center;transition:all .18s ease}
-    .task input[type="checkbox"]::after{content:"";width:12px;height:12px;border-radius:3px;transform:scale(0);background:linear-gradient(135deg,var(--accent),var(--accent2));transition:transform .18s ease}
-    .task input[type="checkbox"]:checked{border-color:transparent;background:rgba(99,102,241,.18)}
-    .task input[type="checkbox"]:checked::after{transform:scale(1)}
-    .task .text{flex:1;word-break:break-word}
-    .task.done .text{opacity:.6;text-decoration:line-through}
-    .task time{font-size:12px;color:var(--muted)}
-    .task .actions{display:flex;gap:6px}
-    .divider{height:1px;background:var(--line);margin:6px 0 10px}
+    h1{margin:0;font-size:clamp(20px,3.5vw,28px)}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.tab{border:1px solid var(--line);background:#fff;padding:10px 14px;border-radius:12px;cursor:pointer;font-weight:600}
+.tab.active{color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent2));border-color:transparent}
+
+.card{margin:16px 0;padding:18px;background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
+
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.input{flex:1;min-width:180px;background:#fff;border:1px solid var(--line);color:var(--text);padding:12px 14px;border-radius:12px;outline:none;transition:border .2s,box-shadow .2s}
+.input:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(91,108,255,.12)}
+
+.btn{border:0;padding:12px 14px;border-radius:12px;cursor:pointer;font-weight:600;transition:transform .08s ease}
+.btn:active{transform:translateY(1px)}
+.btn-primary{color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent2))}
+.btn-ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
+.btn-danger{background:linear-gradient(135deg,#f87171,#ef4444);color:#fff}
+
+.section-title{display:flex;align-items:center;justify-content:space-between;margin:0 0 8px}
+.section-title h3{margin:0;font-size:18px}
+.muted{color:var(--muted);font-size:13px}
+
+ul{list-style:none;padding:0;margin:12px 0 0}
+li.item{display:flex;align-items:center;gap:12px;padding:14px;margin:10px 0;background:#fff;border:1px solid var(--line);border-radius:14px}
+li.item:hover{box-shadow:0 8px 24px rgba(2,6,23,.08)}
+
+.checkbox{appearance:none;width:22px;height:22px;border-radius:6px;border:2px solid rgba(100,116,139,.6);display:grid;place-items:center;transition:all .18s ease}
+.checkbox::after{content:"";width:12px;height:12px;border-radius:3px;transform:scale(0);background:linear-gradient(135deg,var(--accent),var(--accent2));transition:transform .18s ease}
+.checkbox:checked{border-color:transparent;background:rgba(99,102,241,.18)}
+.checkbox:checked::after{transform:scale(1)}
+
+.text{flex:1;word-break:break-word}
+time{font-size:12px;color:var(--muted)}
+.actions{display:flex;gap:6px}
+
+.grid{display:grid;grid-template-columns:1fr;gap:16px}
+@media(min-width:860px){.grid{grid-template-columns:1fr 1fr}}
+.divider{height:1px;background:var(--line);margin:6px 0 10px}
+
+/* جداول بسيطة للأسعار والأوردرات */
+table{width:100%;border-collapse:separate;border-spacing:0 8px}
+th,td{text-align:right;padding:12px;background:#fff;border:1px solid var(--line)}
+th{background:#f9fbff}
+tr td:first-child, tr th:first-child{border-top-right-radius:12px;border-bottom-right-radius:12px}
+tr td:last-child, tr th:last-child{border-top-left-radius:12px;border-bottom-left-radius:12px}
+.price{font-weight:700}
+
+.hidden{display:none}
+
   </style>
 </head>
 <body>
@@ -56,46 +75,67 @@
     <div class="container brand">
       <div class="brand-left">
         <div class="logo" id="logoSlot"><span>L</span></div>
-        <h1>lynka to do list</h1>
+        <h1>Lynka — لوحة الإدارة</h1>
       </div>
     </div>
-  </header>
-
-  <main class="container">
-    <section class="app">
+    <div class="container tabs" id="tabs">
+      <button class="tab active" data-tab="todo">قائمة المهام</button>
+      <button class="tab" data-tab="prices">الأسعار</button>
+      <button class="tab" data-tab="orders">الأوردرات</button>
+    </div>
+  </header>  <main class="container">
+    <!-- TAB: TODO -->
+    <section id="tab-todo" class="card">
       <div class="row" style="margin-bottom:12px">
         <input id="taskInput" class="input" placeholder="اكتب مهمة واضغط إضافة أو Enter" />
-        <button id="addBtn" class="btn btn-primary">إضافة</button>
+        <button id="addTaskBtn" class="btn btn-primary">إضافة</button>
         <button id="clearCompletedBtn" class="btn btn-ghost" title="حذف المهام المنجزة">حذف المُنجز</button>
       </div>
       <div class="divider"></div>
-
       <div class="grid">
         <div>
-          <div class="section-title">
-            <h3>المهام النشطة</h3>
-            <span class="muted" id="countActive">0</span>
-          </div>
+          <div class="section-title"><h3>المهام النشطة</h3><span class="muted" id="countActive">0</span></div>
           <ul id="listActive"></ul>
         </div>
-
         <div>
-          <div class="section-title">
-            <h3>المهام المُنجزة</h3>
-            <span class="muted" id="countDone">0</span>
-          </div>
+          <div class="section-title"><h3>المهام المُنجزة</h3><span class="muted" id="countDone">0</span></div>
           <ul id="listDone"></ul>
         </div>
       </div>
-    </section>
-  </main>
+    </section><!-- TAB: PRICES -->
+<section id="tab-prices" class="card hidden">
+  <div class="row" style="margin-bottom:12px">
+    <input id="productName" class="input" placeholder="اسم المنتج" />
+    <input id="productPrice" class="input" type="number" step="0.01" placeholder="السعر" />
+    <button id="addProductBtn" class="btn btn-primary">إضافة منتج</button>
+  </div>
+  <div class="divider"></div>
+  <table>
+    <thead>
+      <tr><th>المنتج</th><th>السعر</th><th>تاريخ</th><th>إجراء</th></tr>
+    </thead>
+    <tbody id="productsBody"></tbody>
+  </table>
+</section>
 
-  <!-- Firebase compat SDKs (مناسبة للنسخ المباشرة في HTML) -->
-  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+<!-- TAB: ORDERS -->
+<section id="tab-orders" class="card hidden">
+  <div class="row" style="margin-bottom:12px">
+    <input id="orderTitle" class="input" placeholder="اسم/رقم الأوردر" />
+    <input id="orderTotal" class="input" type="number" step="0.01" placeholder="الإجمالي (اختياري)" />
+    <button id="addOrderBtn" class="btn btn-primary">إضافة أوردر</button>
+  </div>
+  <div class="divider"></div>
+  <table>
+    <thead>
+      <tr><th>الأوردر</th><th>الإجمالي</th><th>تاريخ</th><th>إجراء</th></tr>
+    </thead>
+    <tbody id="ordersBody"></tbody>
+  </table>
+</section>
 
-  <script>
-    // بيانات مشروعك (من Firebase Console)
+  </main>  <!-- Firebase compat SDKs -->  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>  <script>
+    // 🔧 بيانات مشروعك (كما استخدمناها سابقًا)
     const firebaseConfig = {
       apiKey: "AIzaSyCnM6-7BoICLWAXUeH8qz8A_OCicGpQtMU",
       authDomain: "lynka-to-do-list-eb2ac.firebaseapp.com",
@@ -105,34 +145,44 @@
       appId: "1:202285237255:web:c12e66369d033e4ecd96a2"
     };
 
-    // تهيئة Firebase + Firestore
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
-    const tasksRef = db.collection('tasks');
 
-    // عناصر الواجهة
-    const input = document.getElementById('taskInput');
-    const addBtn = document.getElementById('addBtn');
+    // ---------------- Tabs ----------------
+    const tabsEl = document.getElementById('tabs');
+    const sections = {
+      todo: document.getElementById('tab-todo'),
+      prices: document.getElementById('tab-prices'),
+      orders: document.getElementById('tab-orders')
+    };
+    tabsEl.addEventListener('click', (e)=>{
+      const btn = e.target.closest('.tab');
+      if(!btn) return;
+      tabsEl.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+      btn.classList.add('active');
+      const key = btn.dataset.tab;
+      Object.entries(sections).forEach(([k,sec])=> sec.classList.toggle('hidden', k!==key));
+    });
+
+    // --------------- TODO LIST ---------------
+    const tasksRef = db.collection('tasks');
+    const taskInput = document.getElementById('taskInput');
+    const addTaskBtn = document.getElementById('addTaskBtn');
     const clearCompletedBtn = document.getElementById('clearCompletedBtn');
     const listActive = document.getElementById('listActive');
     const listDone = document.getElementById('listDone');
     const countActive = document.getElementById('countActive');
-    const countDone   = document.getElementById('countDone');
+    const countDone = document.getElementById('countDone');
 
-    // إضافة مهمة
     async function addTask(){
-      const text = (input.value || '').trim();
+      const text = (taskInput.value||'').trim();
       if(!text) return;
-      await tasksRef.add({
-        text, done:false,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
-      input.value=''; input.focus();
+      await tasksRef.add({ text, done:false, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+      taskInput.value=''; taskInput.focus();
     }
-    addBtn.addEventListener('click', addTask);
-    input.addEventListener('keydown', e=>{ if(e.key==='Enter') addTask(); });
+    addTaskBtn.addEventListener('click', addTask);
+    taskInput.addEventListener('keydown', e=>{ if(e.key==='Enter') addTask(); });
 
-    // حذف كل المهام المنجزة
     clearCompletedBtn.addEventListener('click', async ()=>{
       const doneDocs = await tasksRef.where('done','==',true).get();
       const batch = db.batch();
@@ -140,66 +190,108 @@
       await batch.commit();
     });
 
-    // عنصر مهمة واحد
     function taskItem(doc){
-      const data = doc.data();
-      const li = document.createElement('li');
-      li.className = 'task' + (data.done ? ' done' : '');
-      li.dataset.id = doc.id;
-
-      const checkbox = document.createElement('input');
-      checkbox.type='checkbox';
-      checkbox.checked = !!data.done;
-      checkbox.addEventListener('change', ()=> doc.ref.update({done: checkbox.checked}));
-
-      const text = document.createElement('div');
-      text.className='text';
-      text.textContent = data.text;
-
-      const meta = document.createElement('time');
-      if(data.createdAt?.toDate){
-        const d = data.createdAt.toDate();
-        meta.textContent = d.toLocaleString('ar-EG');
-      }
-
-      const actions = document.createElement('div');
-      actions.className='actions';
-      const del = document.createElement('button');
-      del.className='btn btn-danger';
-      del.textContent='حذف';
-      del.addEventListener('click', ()=> doc.ref.delete());
-
+      const d = doc.data();
+      const li = document.createElement('li'); li.className='item'+(d.done?' done':'');
+      const cb = document.createElement('input'); cb.type='checkbox'; cb.className='checkbox'; cb.checked=!!d.done;
+      cb.addEventListener('change', ()=> doc.ref.update({done: cb.checked}));
+      const text = document.createElement('div'); text.className='text'; text.textContent=d.text;
+      const time = document.createElement('time'); if(d.createdAt?.toDate){ time.textContent=d.createdAt.toDate().toLocaleString('ar-EG'); }
+      const actions = document.createElement('div'); actions.className='actions';
+      const del = document.createElement('button'); del.className='btn btn-danger'; del.textContent='حذف'; del.addEventListener('click', ()=> doc.ref.delete());
       actions.appendChild(del);
-      li.appendChild(checkbox);
-      li.appendChild(text);
-      li.appendChild(meta);
-      li.appendChild(actions);
+      li.append(cb,text,time,actions);
       return li;
     }
 
-    // متابعة لحظية + توزيع على قائمتين
     tasksRef.orderBy('createdAt','desc').onSnapshot(snap=>{
-      listActive.innerHTML=''; listDone.innerHTML='';
-      let a=0, d=0;
+      listActive.innerHTML=''; listDone.innerHTML=''; let a=0,dn=0;
       snap.docs.forEach(doc=>{
         const el = taskItem(doc);
-        if(doc.data().done){ listDone.appendChild(el); d++; }
-        else{ listActive.appendChild(el); a++; }
+        if(doc.data().done){ listDone.appendChild(el); dn++; } else { listActive.appendChild(el); a++; }
       });
       countActive.textContent = a + ' نشطة';
-      countDone.textContent   = d + ' مُنجزة';
+      countDone.textContent = dn + ' مُنجزة';
     });
 
-    // لوجو (اختياري): ارفع logo.png في الريبو، هيظهر تلقائيًا
+    // --------------- PRICES ---------------
+    const productsRef = db.collection('products');
+    const productName = document.getElementById('productName');
+    const productPrice = document.getElementById('productPrice');
+    const addProductBtn = document.getElementById('addProductBtn');
+    const productsBody = document.getElementById('productsBody');
+
+    async function addProduct(){
+      const name = (productName.value||'').trim();
+      const price = parseFloat(productPrice.value);
+      if(!name || isNaN(price)) return;
+      await productsRef.add({ name, price, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+      productName.value=''; productPrice.value='';
+    }
+    addProductBtn.addEventListener('click', addProduct);
+    productName.addEventListener('keydown', e=>{ if(e.key==='Enter') addProduct(); });
+    productPrice.addEventListener('keydown', e=>{ if(e.key==='Enter') addProduct(); });
+
+    function productRow(doc){
+      const d = doc.data();
+      const tr = document.createElement('tr');
+      const tdName = document.createElement('td'); tdName.textContent=d.name;
+      const tdPrice = document.createElement('td'); tdPrice.innerHTML = `<span class="price">${Number(d.price).toLocaleString('ar-EG')}</span>`;
+      const tdDate = document.createElement('td'); if(d.createdAt?.toDate){ tdDate.textContent=d.createdAt.toDate().toLocaleString('ar-EG'); }
+      const tdAct = document.createElement('td');
+      const del = document.createElement('button'); del.className='btn btn-danger'; del.textContent='حذف'; del.addEventListener('click', ()=> doc.ref.delete());
+      tdAct.appendChild(del);
+      tr.append(tdName, tdPrice, tdDate, tdAct);
+      return tr;
+    }
+
+    productsRef.orderBy('createdAt','desc').onSnapshot(snap=>{
+      productsBody.innerHTML='';
+      snap.docs.forEach(doc=> productsBody.appendChild(productRow(doc)) );
+    });
+
+    // --------------- ORDERS ---------------
+    const ordersRef = db.collection('orders');
+    const orderTitle = document.getElementById('orderTitle');
+    const orderTotal = document.getElementById('orderTotal');
+    const addOrderBtn = document.getElementById('addOrderBtn');
+    const ordersBody = document.getElementById('ordersBody');
+
+    async function addOrder(){
+      const title = (orderTitle.value||'').trim();
+      const total = orderTotal.value ? parseFloat(orderTotal.value) : null;
+      if(!title) return;
+      await ordersRef.add({ title, total, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+      orderTitle.value=''; orderTotal.value='';
+    }
+    addOrderBtn.addEventListener('click', addOrder);
+    orderTitle.addEventListener('keydown', e=>{ if(e.key==='Enter') addOrder(); });
+    orderTotal.addEventListener('keydown', e=>{ if(e.key==='Enter') addOrder(); });
+
+    function orderRow(doc){
+      const d = doc.data();
+      const tr = document.createElement('tr');
+      const tdTitle = document.createElement('td'); tdTitle.textContent=d.title;
+      const tdTotal = document.createElement('td'); tdTotal.innerHTML = d.total!=null ? `<span class="price">${Number(d.total).toLocaleString('ar-EG')}</span>` : '—';
+      const tdDate = document.createElement('td'); if(d.createdAt?.toDate){ tdDate.textContent=d.createdAt.toDate().toLocaleString('ar-EG'); }
+      const tdAct = document.createElement('td');
+      const del = document.createElement('button'); del.className='btn btn-danger'; del.textContent='حذف'; del.addEventListener('click', ()=> doc.ref.delete());
+      tdAct.appendChild(del);
+      tr.append(tdTitle, tdTotal, tdDate, tdAct);
+      return tr;
+    }
+
+    ordersRef.orderBy('createdAt','desc').onSnapshot(snap=>{
+      ordersBody.innerHTML='';
+      snap.docs.forEach(doc=> ordersBody.appendChild(orderRow(doc)) );
+    });
+
+    // (اختياري) لوجو الشركة: ارفع logo.png في نفس الريبو وسيظهر تلقائيًا
     (function(){
       const slot = document.getElementById('logoSlot');
       const img = new Image();
       img.onload = ()=>{ slot.innerHTML=''; slot.appendChild(img); };
       img.src = 'logo.png'; img.alt = 'logo';
     })();
-  </script>
-</body>
+  </script></body>
 </html>
-STEVEN & NASSEF
-
-
