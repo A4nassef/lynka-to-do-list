@@ -1,3 +1,6 @@
+تمام — ده index.html كامل ومربوط بـ Firestore (تحديث لحظي + قائمتين نشطة/منجزة + حذف + حذف المُنجز).
+انسخه مكان الملف الحالي في GitHub واعمل Commit وبس.
+
 <!doctype html>
 <html lang="ar" dir="rtl">
 <head>
@@ -7,69 +10,46 @@
   <meta name="color-scheme" content="light dark">
   <style>
     :root{
-      /* لوحة هادئة محترفة */
-      --bg: #E6F2FA;        /* أزرق سماوي فاتح جدًا */
-      --text:#0f172a;       /* نص داكن مريح */
-      --muted:#6b7280;      /* نص ثانوي */
-      --card:#ffffffcc;     /* بطاقة شفافة خفيفة */
-      --line:#dfe5ee;       /* حدود رقيقة */
-      --accent:#5b6cff;     /* Indigo */
-      --accent-2:#19c6d1;   /* Cyan */
-      --danger:#ef4444;     /* حذف */
-      --shadow: 0 10px 30px rgba(2,6,23,.08);
+      --bg:#E6F2FA; --text:#0f172a; --muted:#6b7280;
+      --card:#ffffffcc; --line:#dfe5ee;
+      --accent:#5b6cff; --accent2:#19c6d1;
+      --danger:#ef4444; --shadow:0 10px 30px rgba(2,6,23,.08);
     }
-
     *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0; font-family: ui-rounded, system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Kufi Arabic", "Noto Sans Arabic", sans-serif;
-      color:var(--text); background:var(--bg);
-    }
-
-    /* Header */
-    header{position:sticky; top:0; z-index:10; background:linear-gradient(180deg, rgba(255,255,255,.85), rgba(255,255,255,.65)); backdrop-filter: blur(8px); border-bottom:1px solid var(--line)}
-    .container{max-width:980px; margin:0 auto; padding:16px}
-    .brand{display:flex; align-items:center; justify-content:space-between; gap:12px}
-    .brand-left{display:flex; align-items:center; gap:12px}
-    .logo{width:44px; height:44px; border-radius:12px; background:linear-gradient(135deg, var(--accent), var(--accent-2)); display:grid; place-items:center; font-weight:800; color:#fff; box-shadow:var(--shadow); overflow:hidden}
-    .logo img{width:100%; height:100%; object-fit:cover; display:block}
-    .brand h1{margin:0; font-size:clamp(20px, 3.5vw, 28px)}
-
-    /* App Card */
-    .app{margin:24px auto; padding:18px; background:var(--card); border:1px solid var(--line); border-radius:18px; box-shadow:var(--shadow)}
-
-    .grid{display:grid; grid-template-columns:1fr; gap:16px}
-    @media (min-width:860px){.grid{grid-template-columns:1fr 1fr}}
-
-    .row{display:flex; gap:8px; flex-wrap:wrap}
-    .input{flex:1; min-width:220px; background:#fff; border:1px solid var(--line); color:var(--text); padding:12px 14px; border-radius:12px; outline:none; transition:border .2s, box-shadow .2s}
-    .input:focus{border-color:var(--accent); box-shadow:0 0 0 4px rgba(91,108,255,.12)}
-
-    .btn{border:0; padding:12px 14px; border-radius:12px; cursor:pointer; font-weight:600; transition: transform .08s ease}
-    .btn:active{transform: translateY(1px)}
-    .btn-primary{color:#fff; background:linear-gradient(135deg, var(--accent), var(--accent-2))}
-    .btn-ghost{background:transparent; color:var(--text); border:1px solid var(--line)}
-    .btn-danger{background:linear-gradient(135deg, #f87171, #ef4444); color:#fff}
-
-    .section-title{display:flex; align-items:center; justify-content:space-between; margin:0 0 8px}
-    .section-title h3{margin:0; font-size:18px}
-    .muted{color:var(--muted); font-size:13px}
-
-    ul{list-style:none; padding:0; margin:12px 0 0}
-    li.task{display:flex; align-items:center; gap:12px; padding:14px; margin:10px 0; background:#fff; border:1px solid var(--line); border-radius:14px; transition: box-shadow .2s}
+    body{margin:0;font-family:ui-rounded,system-ui,-apple-system,"Segoe UI",Roboto,Arial,"Noto Kufi Arabic","Noto Sans Arabic",sans-serif;color:var(--text);background:var(--bg)}
+    header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,rgba(255,255,255,.85),rgba(255,255,255,.65));backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+    .container{max-width:980px;margin:0 auto;padding:16px}
+    .brand{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .brand-left{display:flex;align-items:center;gap:12px}
+    .logo{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-weight:800;color:#fff;box-shadow:var(--shadow);overflow:hidden}
+    .logo img{width:100%;height:100%;object-fit:cover;display:block}
+    h1{margin:0;font-size:clamp(20px,3.5vw,28px)}
+    .app{margin:24px auto;padding:18px;background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
+    .grid{display:grid;grid-template-columns:1fr;gap:16px}
+    @media(min-width:860px){.grid{grid-template-columns:1fr 1fr}}
+    .row{display:flex;gap:8px;flex-wrap:wrap}
+    .input{flex:1;min-width:220px;background:#fff;border:1px solid var(--line);color:var(--text);padding:12px 14px;border-radius:12px;outline:none;transition:border .2s,box-shadow .2s}
+    .input:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(91,108,255,.12)}
+    .btn{border:0;padding:12px 14px;border-radius:12px;cursor:pointer;font-weight:600;transition:transform .08s ease}
+    .btn:active{transform:translateY(1px)}
+    .btn-primary{color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent2))}
+    .btn-ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
+    .btn-danger{background:linear-gradient(135deg,#f87171,#ef4444);color:#fff}
+    .section-title{display:flex;align-items:center;justify-content:space-between;margin:0 0 8px}
+    .section-title h3{margin:0;font-size:18px}
+    .muted{color:var(--muted);font-size:13px}
+    ul{list-style:none;padding:0;margin:12px 0 0}
+    li.task{display:flex;align-items:center;gap:12px;padding:14px;margin:10px 0;background:#fff;border:1px solid var(--line);border-radius:14px;transition:box-shadow .2s}
     li.task:hover{box-shadow:0 8px 24px rgba(2,6,23,.08)}
-
-    .task input[type="checkbox"]{appearance:none; width:22px; height:22px; border-radius:6px; border:2px solid rgba(100,116,139,.6); display:grid; place-items:center; transition:all .18s ease}
-    .task input[type="checkbox"]::after{content:""; width:12px; height:12px; border-radius:3px; transform: scale(0); background:linear-gradient(135deg, var(--accent), var(--accent-2)); transition: transform .18s ease}
-    .task input[type="checkbox"]:checked{border-color:transparent; background:rgba(99,102,241,.18)}
-    .task input[type="checkbox"]:checked::after{transform: scale(1)}
-
-    .task .text{flex:1; word-break:break-word}
-    .task.done .text{opacity:.6; text-decoration: line-through}
-    .task time{font-size:12px; color:var(--muted)}
-    .task .actions{display:flex; gap:6px}
-
-    .divider{height:1px; background:var(--line); margin:6px 0 10px}
+    .task input[type="checkbox"]{appearance:none;width:22px;height:22px;border-radius:6px;border:2px solid rgba(100,116,139,.6);display:grid;place-items:center;transition:all .18s ease}
+    .task input[type="checkbox"]::after{content:"";width:12px;height:12px;border-radius:3px;transform:scale(0);background:linear-gradient(135deg,var(--accent),var(--accent2));transition:transform .18s ease}
+    .task input[type="checkbox"]:checked{border-color:transparent;background:rgba(99,102,241,.18)}
+    .task input[type="checkbox"]:checked::after{transform:scale(1)}
+    .task .text{flex:1;word-break:break-word}
+    .task.done .text{opacity:.6;text-decoration:line-through}
+    .task time{font-size:12px;color:var(--muted)}
+    .task .actions{display:flex;gap:6px}
+    .divider{height:1px;background:var(--line);margin:6px 0 10px}
   </style>
 </head>
 <body>
@@ -111,11 +91,12 @@
     </section>
   </main>
 
+  <!-- Firebase compat SDKs (مناسبة للنسخ المباشرة في HTML) -->
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
 
   <script>
-    // Firebase config الخاص بمشروعك
+    // بيانات مشروعك (من Firebase Console)
     const firebaseConfig = {
       apiKey: "AIzaSyCnM6-7BoICLWAXUeH8qz8A_OCicGpQtMU",
       authDomain: "lynka-to-do-list-eb2ac.firebaseapp.com",
@@ -125,27 +106,34 @@
       appId: "1:202285237255:web:c12e66369d033e4ecd96a2"
     };
 
+    // تهيئة Firebase + Firestore
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
     const tasksRef = db.collection('tasks');
 
+    // عناصر الواجهة
     const input = document.getElementById('taskInput');
     const addBtn = document.getElementById('addBtn');
     const clearCompletedBtn = document.getElementById('clearCompletedBtn');
     const listActive = document.getElementById('listActive');
     const listDone = document.getElementById('listDone');
     const countActive = document.getElementById('countActive');
-    const countDone = document.getElementById('countDone');
+    const countDone   = document.getElementById('countDone');
 
+    // إضافة مهمة
     async function addTask(){
       const text = (input.value || '').trim();
       if(!text) return;
-      await tasksRef.add({ text, done:false, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+      await tasksRef.add({
+        text, done:false,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
       input.value=''; input.focus();
     }
     addBtn.addEventListener('click', addTask);
     input.addEventListener('keydown', e=>{ if(e.key==='Enter') addTask(); });
 
+    // حذف كل المهام المنجزة
     clearCompletedBtn.addEventListener('click', async ()=>{
       const doneDocs = await tasksRef.where('done','==',true).get();
       const batch = db.batch();
@@ -153,6 +141,7 @@
       await batch.commit();
     });
 
+    // عنصر مهمة واحد
     function taskItem(doc){
       const data = doc.data();
       const li = document.createElement('li');
@@ -165,7 +154,7 @@
       checkbox.addEventListener('change', ()=> doc.ref.update({done: checkbox.checked}));
 
       const text = document.createElement('div');
-      text.className = 'text';
+      text.className='text';
       text.textContent = data.text;
 
       const meta = document.createElement('time');
@@ -175,40 +164,43 @@
       }
 
       const actions = document.createElement('div');
-      actions.className = 'actions';
-
+      actions.className='actions';
       const del = document.createElement('button');
-      del.className = 'btn btn-danger';
-      del.textContent = 'حذف';
+      del.className='btn btn-danger';
+      del.textContent='حذف';
       del.addEventListener('click', ()=> doc.ref.delete());
 
       actions.appendChild(del);
-      li.appendChild(checkbox); li.appendChild(text); li.appendChild(meta); li.appendChild(actions);
+      li.appendChild(checkbox);
+      li.appendChild(text);
+      li.appendChild(meta);
+      li.appendChild(actions);
       return li;
     }
 
+    // متابعة لحظية + توزيع على قائمتين
     tasksRef.orderBy('createdAt','desc').onSnapshot(snap=>{
       listActive.innerHTML=''; listDone.innerHTML='';
       let a=0, d=0;
       snap.docs.forEach(doc=>{
         const el = taskItem(doc);
-        if(doc.data().done){ listDone.appendChild(el); d++; } else { listActive.appendChild(el); a++; }
+        if(doc.data().done){ listDone.appendChild(el); d++; }
+        else{ listActive.appendChild(el); a++; }
       });
       countActive.textContent = a + ' نشطة';
-      countDone.textContent = d + ' مُنجزة';
+      countDone.textContent   = d + ' مُنجزة';
     });
 
-    // اللوجو (اختياري): ارفع logo.png في نفس الريبو وسيظهر تلقائيًا
+    // لوجو (اختياري): ارفع logo.png في الريبو، هيظهر تلقائيًا
     (function(){
-      const logoEl = document.getElementById('logoSlot');
+      const slot = document.getElementById('logoSlot');
       const img = new Image();
-      img.onload = ()=>{ logoEl.innerHTML=''; logoEl.appendChild(img); };
-      img.src = 'logo.png';
-      img.alt = 'logo';
+      img.onload = ()=>{ slot.innerHTML=''; slot.appendChild(img); };
+      img.src = 'logo.png'; img.alt = 'logo';
     })();
   </script>
 </body>
 </html>
-
+STEVEN & NASSEF
 
 
