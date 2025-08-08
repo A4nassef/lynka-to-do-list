@@ -7,70 +7,83 @@
   <meta name="color-scheme" content="light dark">
   <style>
     :root{
-      /* لوحة ألوان هادئة وبروفشنال */
-      --bg: #f7f8fb;            /* خلفية فاتحة */
-      --text:#0f172a;           /* نص داكن مريح */
-      --muted:#64748b;          /* نص ثانوي */
-      --card:#ffffff;           /* بطاقات */
-      --line:#e5e7eb;           /* حدود خفيفة */
-      --accent:#4f46e5;         /* Indigo */
-      --accent-2:#06b6d4;       /* Cyan لمسات صغيرة */
-      --danger:#ef4444;         /* حذف */
-      --ok:#10b981;             /* نجاح */
-      --shadow: 0 10px 30px rgba(2,6,23,.06);
+      --bg: #f6f7fb;
+      --text:#0f172a;
+      --muted:#64748b;
+      --card:#ffffff;
+      --line:#e9ecf1;
+      --accent:#5b6cff;   /* indigo/cornflower */
+      --accent-2:#19c6d1; /* cyan */
+      --danger:#ef4444;
+      --ok:#10b981;
+      --shadow: 0 12px 35px rgba(2,6,23,.06);
     }
-
     @media (prefers-color-scheme: dark){
-      :root{--bg:#0b1220; --text:#e5e7eb; --muted:#9aa4b2; --card:#0f172a; --line:#1f2937; --shadow:0 10px 30px rgba(0,0,0,.25)}
+      :root{--bg:#0b1220;--text:#e5e7eb;--muted:#9aa4b2;--card:#0f172a;--line:#182034;--shadow:0 18px 45px rgba(0,0,0,.35)}
     }
-
     *{box-sizing:border-box}
     html,body{height:100%}
-    body{margin:0; font-family: ui-rounded, system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Kufi Arabic","Noto Sans Arabic",sans-serif; background:var(--bg); color:var(--text)}
+    body{
+      margin:0; font-family:ui-rounded,system-ui,-apple-system,"Segoe UI",Roboto,Arial,"Noto Kufi Arabic","Noto Sans Arabic",sans-serif; color:var(--text); background:radial-gradient(900px 500px at 85% -10%, rgba(89,125,255,.12), transparent 60%), radial-gradient(800px 480px at -10% 10%, rgba(25,198,209,.10), transparent 60%), var(--bg);
+    }
 
-    header{position:sticky; top:0; z-index:10; background:linear-gradient(180deg, rgba(255,255,255,.9), rgba(255,255,255,.7)); backdrop-filter: blur(8px); border-bottom:1px solid var(--line)}
-    @media (prefers-color-scheme: dark){header{background:linear-gradient(180deg, rgba(11,18,32,.9), rgba(11,18,32,.6));}}
+    /* Header */
+    header{position:sticky; top:0; z-index:10; background:linear-gradient(180deg, rgba(255,255,255,.85), rgba(255,255,255,.65)); backdrop-filter: blur(10px); border-bottom:1px solid var(--line)}
+    @media (prefers-color-scheme: dark){header{background:linear-gradient(180deg, rgba(11,18,32,.85), rgba(11,18,32,.55));}}
     .container{max-width:980px; margin:0 auto; padding:16px}
-    .brand{display:flex; align-items:center; gap:12px}
-    .logo{width:40px; height:40px; border-radius:12px; background:linear-gradient(135deg, var(--accent), var(--accent-2)); display:grid; place-items:center; font-weight:800; color:#fff; box-shadow:var(--shadow)}
+    .brand{display:flex; align-items:center; justify-content:space-between; gap:12px}
+    .brand-left{display:flex; align-items:center; gap:12px}
+    .logo{width:44px; height:44px; border-radius:12px; background:linear-gradient(135deg, var(--accent), var(--accent-2)); display:grid; place-items:center; font-weight:800; color:#fff; box-shadow:var(--shadow); overflow:hidden}
+    .logo img{width:100%; height:100%; object-fit:cover}
     .brand h1{margin:0; font-size:clamp(20px, 3.5vw, 28px)}
+    .pill{padding:6px 10px; border-radius:999px; font-size:12px; color:#fff; background:linear-gradient(135deg, var(--accent-2), var(--accent)); opacity:.9}
 
-    .app{margin:24px auto; padding:16px; background:var(--card); border:1px solid var(--line); border-radius:18px; box-shadow:var(--shadow)}
+    /* App Card */
+    .app{margin:24px auto; padding:18px; background:var(--card); border:1px solid var(--line); border-radius:18px; box-shadow:var(--shadow)}
 
-    .grid{display:grid; grid-template-columns: 1fr; gap:16px}
+    .grid{display:grid; grid-template-columns:1fr; gap:16px}
     @media (min-width:860px){.grid{grid-template-columns:1fr 1fr}}
 
     .row{display:flex; gap:8px; flex-wrap:wrap}
-    .input{flex:1; min-width:220px; background:#fff; border:1px solid var(--line); color:var(--text); padding:12px 14px; border-radius:12px; outline:none}
-    .input:focus{border-color:var(--accent)}
-    @media (prefers-color-scheme: dark){.input{background:#0b1220;}}
-    .btn{border:0; padding:12px 14px; border-radius:12px; cursor:pointer; font-weight:600}
+    .input{flex:1; min-width:220px; background:#fff; border:1px solid var(--line); color:var(--text); padding:12px 14px; border-radius:12px; outline:none; transition:border .2s, box-shadow .2s}
+    .input:focus{border-color:var(--accent); box-shadow:0 0 0 4px rgba(91,108,255,.12)}
+    @media (prefers-color-scheme: dark){.input{background:#0b1220}}
+
+    .btn{border:0; padding:12px 14px; border-radius:12px; cursor:pointer; font-weight:600; transition: transform .08s ease, opacity .2s}
+    .btn:active{transform: translateY(1px)}
     .btn-primary{color:#fff; background:linear-gradient(135deg, var(--accent), var(--accent-2))}
     .btn-ghost{background:transparent; color:var(--text); border:1px solid var(--line)}
     .btn-danger{background:linear-gradient(135deg, #f87171, #ef4444); color:#fff}
-    .btn-ok{background:linear-gradient(135deg, #34d399, #10b981); color:#0b1322}
 
     .section-title{display:flex; align-items:center; justify-content:space-between; margin:0 0 8px}
     .section-title h3{margin:0; font-size:18px}
     .muted{color:var(--muted); font-size:13px}
 
     ul{list-style:none; padding:0; margin:12px 0 0}
-    li.task{display:flex; align-items:center; gap:12px; padding:12px; margin:10px 0; background: #fff; border:1px solid var(--line); border-radius:14px}
+    li.task{display:flex; align-items:center; gap:12px; padding:14px; margin:10px 0; background:#fff; border:1px solid var(--line); border-radius:14px; transition: box-shadow .2s, transform .08s}
+    li.task:hover{box-shadow:0 8px 24px rgba(2,6,23,.06)}
     @media (prefers-color-scheme: dark){li.task{background:#0b1220}}
-    .task input[type="checkbox"]{width:20px; height:20px}
-    .task .text{flex:1; word-break:break-word}
-    .task.done .text{opacity:.65; text-decoration: line-through}
+    .task input[type="checkbox"]{appearance:none; width:22px; height:22px; border-radius:6px; border:2px solid rgba(100,116,139,.6); display:grid; place-items:center; transition:all .18s ease}
+    .task input[type="checkbox"]::after{content:""; width:12px; height:12px; border-radius:3px; transform: scale(0); background:linear-gradient(135deg, var(--accent), var(--accent-2)); transition: transform .18s ease}
+    .task input[type="checkbox"]:checked{border-color:transparent; background:rgba(91,108,255,.15)}
+    .task input[type="checkbox"]:checked::after{transform: scale(1)}
+
+    .task .text{flex:1; word-break:break-word; transition:opacity .2s}
+    .task.done .text{opacity:.6; text-decoration: line-through}
     .task time{font-size:12px; color:var(--muted)}
     .task .actions{display:flex; gap:6px}
 
-    footer{opacity:.8; text-align:center; padding:20px; font-size:12px}
+    .divider{height:1px; background:var(--line); margin:6px 0 10px}
   </style>
 </head>
 <body>
   <header>
     <div class="container brand">
-      <div class="logo">L</div>
-      <h1>lynka to do list</h1>
+      <div class="brand-left">
+        <div class="logo" id="logoSlot"><span>L</span></div>
+        <h1>lynka to do list</h1>
+      </div>
+      <div class="pill">متزامنة لحظيًا</div>
     </div>
   </header>
 
@@ -81,6 +94,7 @@
         <button id="addBtn" class="btn btn-primary">إضافة</button>
         <button id="clearCompletedBtn" class="btn btn-ghost" title="حذف المهام المنجزة">حذف المُنجز</button>
       </div>
+      <div class="divider"></div>
 
       <div class="grid">
         <div>
@@ -100,16 +114,12 @@
         </div>
       </div>
     </section>
-
-    <footer>قائمة مهام مشتركة بواجهة هادئة—مزامنة فورية عبر Firebase Firestore</footer>
   </main>
 
-  <!-- Firebase (compat v9) -->
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
 
   <script>
-    // ⚙️ إعدادات Firebase—تم ملؤها من مشروعك
     const firebaseConfig = {
       apiKey: "AIzaSyCnM6-7BoICLWAXUeH8qz8A_OCicGpQtMU",
       authDomain: "lynka-to-do-list-eb2ac.firebaseapp.com",
@@ -123,7 +133,6 @@
     const db = firebase.firestore();
     const tasksRef = db.collection('tasks');
 
-    // عناصر الواجهة
     const input = document.getElementById('taskInput');
     const addBtn = document.getElementById('addBtn');
     const clearCompletedBtn = document.getElementById('clearCompletedBtn');
@@ -132,22 +141,15 @@
     const countActive = document.getElementById('countActive');
     const countDone = document.getElementById('countDone');
 
-    // إضافة مهمة
     async function addTask(){
       const text = (input.value || '').trim();
       if(!text) return;
-      await tasksRef.add({
-        text,
-        done: false,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
-      input.value='';
-      input.focus();
+      await tasksRef.add({ text, done:false, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+      input.value=''; input.focus();
     }
     addBtn.addEventListener('click', addTask);
-    input.addEventListener('keydown', (e)=>{ if(e.key==='Enter') addTask(); });
+    input.addEventListener('keydown', e=>{ if(e.key==='Enter') addTask(); });
 
-    // حذف كل المهام المنجزة
     clearCompletedBtn.addEventListener('click', async ()=>{
       const doneDocs = await tasksRef.where('done','==',true).get();
       const batch = db.batch();
@@ -155,7 +157,6 @@
       await batch.commit();
     });
 
-    // عناصر كل مهمة
     function taskItem(doc){
       const data = doc.data();
       const li = document.createElement('li');
@@ -165,7 +166,7 @@
       const checkbox = document.createElement('input');
       checkbox.type='checkbox';
       checkbox.checked = !!data.done;
-      checkbox.addEventListener('change', ()=>{ doc.ref.update({done: checkbox.checked}); });
+      checkbox.addEventListener('change', ()=> doc.ref.update({done: checkbox.checked}));
 
       const text = document.createElement('div');
       text.className = 'text';
@@ -183,43 +184,36 @@
       const del = document.createElement('button');
       del.className = 'btn btn-danger';
       del.textContent = 'حذف';
-      del.title = 'حذف المهمة';
       del.addEventListener('click', ()=> doc.ref.delete());
 
       actions.appendChild(del);
-
-      li.appendChild(checkbox);
-      li.appendChild(text);
-      li.appendChild(meta);
-      li.appendChild(actions);
-
+      li.appendChild(checkbox); li.appendChild(text); li.appendChild(meta); li.appendChild(actions);
       return li;
     }
 
-    // متابعة فورية + تقسيم إلى قائمتين (نشطة/منجزة)
     tasksRef.orderBy('createdAt','desc').onSnapshot(snap=>{
-      listActive.innerHTML = '';
-      listDone.innerHTML = '';
-      let active=0, done=0;
-
+      listActive.innerHTML=''; listDone.innerHTML='';
+      let a=0, d=0;
       snap.docs.forEach(doc=>{
         const el = taskItem(doc);
-        if(doc.data().done){
-          listDone.appendChild(el); done++;
-        } else {
-          listActive.appendChild(el); active++;
-        }
+        if(doc.data().done){ listDone.appendChild(el); d++; } else { listActive.appendChild(el); a++; }
       });
-
-      countActive.textContent = active + ' نشطة';
-      countDone.textContent = done + ' مُنجزة';
+      countActive.textContent = a + ' نشطة';
+      countDone.textContent = d + ' مُنجزة';
     });
 
-    // ملاحظة أمان: للوضع الإنتاجي فعّل قواعد أدق/مصادقة لاحقًا
+    // لو هتبعت لوجو، سمّه logo.png وارفعه في نفس الريبو؛ السطر التالي هيبدله تلقائيًا مكان حرف L
+    const logoEl = document.getElementById('logoSlot');
+    fetch('logo.png', {method:'HEAD'}).then(r=>{ if(r.ok){ logoEl.innerHTML='<img src="logo.png" alt="logo">'; }}).catch(()=>{});
   </script>
 </body>
 </html>
 
 
-{"updates":[{"pattern":".","multiple":false,"replacement":"<!doctype html>\n<html lang="ar" dir="rtl">\n<head>\n  <meta charset="utf-8" />\n  <meta name="viewport" content="width=device-width,initial-scale=1" />\n  <title>lynka to do list</title>\n  <meta name="color-scheme" content="light dark">\n  <style>\n    :root{\n      --bg: #f6f7fb;\n      --text:#0f172a;\n      --muted:#64748b;\n      --card:#ffffff;\n      --line:#e9ecf1;\n      --accent:#5b6cff;   / indigo/cornflower /\n      --accent-2:#19c6d1; / cyan */\n      --danger:#ef4444;\n      --ok:#10b981;\n      --shadow: 0 12px 35px rgba(2,6,23,.06);\n    }\n    @media (prefers-color-scheme: dark){\n      :root{--bg:#0b1220;--text:#e5e7eb;--muted:#9aa4b2;--card:#0f172a;--line:#182034;--shadow:0 18px 45px rgba(0,0,0,.35)}\n    }\n    {box-sizing:border-box}\n    html,body{height:100%}\n    body{\n      margin:0; font-family:ui-rounded,system-ui,-apple-system,"Segoe UI",Roboto,Arial,"Noto Kufi Arabic","Noto Sans Arabic",sans-serif; color:var(--text); background:radial-gradient(900px 500px at 85% -10%, rgba(89,125,255,.12), transparent 60%), radial-gradient(800px 480px at -10% 10%, rgba(25,198,209,.10), transparent 60%), var(--bg);\n    }\n\n    / Header /\n    header{position:sticky; top:0; z-index:10; background:linear-gradient(180deg, rgba(255,255,255,.85), rgba(255,255,255,.65)); backdrop-filter: blur(10px); border-bottom:1px solid var(--line)}\n    @media (prefers-color-scheme: dark){header{background:linear-gradient(180deg, rgba(11,18,32,.85), rgba(11,18,32,.55));}}\n    .container{max-width:980px; margin:0 auto; padding:16px}\n    .brand{display:flex; align-items:center; justify-content:space-between; gap:12px}\n    .brand-left{display:flex; align-items:center; gap:12px}\n    .logo{width:44px; height:44px; border-radius:12px; background:linear-gradient(135deg, var(--accent), var(--accent-2)); display:grid; place-items:center; font-weight:800; color:#fff; box-shadow:var(--shadow); overflow:hidden}\n    .logo img{width:100%; height:100%; object-fit:cover}\n    .brand h1{margin:0; font-size:clamp(20px, 3.5vw, 28px)}\n    .pill{padding:6px 10px; border-radius:999px; font-size:12px; color:#fff; background:linear-gradient(135deg, var(--accent-2), var(--accent)); opacity:.9}\n\n    / App Card */\n    .app{margin:24px auto; padding:18px; background:var(--card); border:1px solid var(--line); border-radius:18px; box-shadow:var(--shadow)}\n\n    .grid{display:grid; grid-template-columns:1fr; gap:16px}\n    @media (min-width:860px){.grid{grid-template-columns:1fr 1fr}}\n\n    .row{display:flex; gap:8px; flex-wrap:wrap}\n    .input{flex:1; min-width:220px; background:#fff; border:1px solid var(--line); color:var(--text); padding:12px 14px; border-radius:12px; outline:none; transition:border .2s, box-shadow .2s}\n    .input:focus{border-color:var(--accent); box-shadow:0 0 0 4px rgba(91,108,255,.12)}\n    @media (prefers-color-scheme: dark){.input{background:#0b1220}}\n\n    .btn{border:0; padding:12px 14px; border-radius:12px; cursor:pointer; font-weight:600; transition: transform .08s ease, opacity .2s}\n    .btn:active{transform: translateY(1px)}\n    .btn-primary{color:#fff; background:linear-gradient(135deg, var(--accent), var(--accent-2))}\n    .btn-ghost{background:transparent; color:var(--text); border:1px solid var(--line)}\n    .btn-danger{background:linear-gradient(135deg, #f87171, #ef4444); color:#fff}\n\n    .section-title{display:flex; align-items:center; justify-content:space-between; margin:0 0 8px}\n    .section-title h3{margin:0; font-size:18px}\n    .muted{color:var(--muted); font-size:13px}\n\n    ul{list-style:none; padding:0; margin:12px 0 0}\n    li.task{display:flex; align-items:center; gap:12px; padding:14px; margin:10px 0; background:#fff; border:1px solid var(--line); border-radius:14px; transition: box-shadow .2s, transform .08s}\n    li.task:hover{box-shadow:0 8px 24px rgba(2,6,23,.06)}\n    @media (prefers-color-scheme: dark){li.task{background:#0b1220}}\n    .task input[type="checkbox"]{appearance:none; width:22px; height:22px; border-radius:6px; border:2px solid rgba(100,116,139,.6); display:grid; place-items:center; transition:all .18s ease}\n    .task input[type="checkbox"]::after{content:""; width:12px; height:12px; border-radius:3px; transform: scale(0); background:linear-gradient(135deg, var(--accent), var(--accent-2)); transition: transform .18s ease}\n    .task input[type="checkbox"]:checked{border-color:transparent; background:rgba(91,108,255,.15)}\n    .task input[type="checkbox"]:checked::after{transform: scale(1)}\n\n    .task .text{flex:1; word-break:break-word; transition:opacity .2s}\n    .task.done .text{opacity:.6; text-decoration: line-through}\n    .task time{font-size:12px; color:var(--muted)}\n    .task .actions{display:flex; gap:6px}\n\n    .divider{height:1px; background:var(--line); margin:6px 0 10px}\n  </style>\n</head>\n<body>\n  <header>\n    <div class="container brand">\n      <div class="brand-left">\n        <div class="logo" id="logoSlot"><span>L</span></div>\n        <h1>lynka to do list</h1>\n      </div>\n      <div class="pill">متزامنة لحظيًا</div>\n    </div>\n  </header>\n\n  <main class="container">\n    <section class="app">\n      <div class="row" style="margin-bottom:12px">\n        <input id="taskInput" class="input" placeholder="اكتب مهمة واضغط إضافة أو Enter" />\n        <button id="addBtn" class="btn btn-primary">إضافة</button>\n        <button id="clearCompletedBtn" class="btn btn-ghost" title="حذف المهام المنجزة">حذف المُنجز</button>\n      </div>\n      <div class="divider"></div>\n\n      <div class="grid">\n        <div>\n          <div class="section-title">\n            <h3>المهام النشطة</h3>\n            <span class="muted" id="countActive">0</span>\n          </div>\n          <ul id="listActive"></ul>\n        </div>\n\n        <div>\n          <div class="section-title">\n            <
+جامد! ظبّطتلك لمسة جمالية: خلفية هادئة بتدرّجين خفيفين، كارت شبه زجاجي، أزرار ناعمة، وأنيميشِن بسيط للـ checkbox. كمان شلت التعليق اللي كان تحت — مفيش فوتر دلوقتي.
+
+اللوجو
+
+ابعت اللوجو (يفضّل PNG بخلفية شفافة أو SVG). ولو سمّيته logo.png ورفعته في نفس الريبو، الكود هيبدّله تلقائي مكان حرف L في الهيدر.
+لو اسم الملف مختلف، قولهولي وأعدّلهولك فورًا.
 
