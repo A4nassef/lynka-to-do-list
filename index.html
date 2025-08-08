@@ -1,104 +1,260 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lynka To Do List</title>
-<style>
-    body {
-        font-family: Arial, sans-serif;
-        background: linear-gradient(135deg, #74ebd5, #ACB6E5);
-        min-height: 100vh;
-        margin: 0;
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>lynka to do list</title>
+  <meta name="color-scheme" content="light dark">
+  <style>
+    :root{
+      /* لوحة ألوان هادئة وبروفشنال */
+      --bg: #f7f8fb;            /* خلفية فاتحة */
+      --text:#0f172a;           /* نص داكن مريح */
+      --muted:#64748b;          /* نص ثانوي */
+      --card:#ffffff;           /* بطاقات */
+      --line:#e5e7eb;           /* حدود خفيفة */
+      --accent:#4f46e5;         /* Indigo */
+      --accent-2:#06b6d4;       /* Cyan لمسات صغيرة */
+      --danger:#ef4444;         /* حذف */
+      --ok:#10b981;             /* نجاح */
+      --shadow: 0 10px 30px rgba(2,6,23,.06);
     }
-    h1 {
-        margin-top: 20px;
-        color: #fff;
-        text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+
+    @media (prefers-color-scheme: dark){
+      :root{--bg:#0b1220; --text:#e5e7eb; --muted:#9aa4b2; --card:#0f172a; --line:#1f2937; --shadow:0 10px 30px rgba(0,0,0,.25)}
     }
-    #taskInput {
-        padding: 10px;
-        border-radius: 5px;
-        border: none;
-        width: 70%;
-        max-width: 300px;
-    }
-    button {
-        padding: 10px 15px;
-        margin-left: 5px;
-        border: none;
-        border-radius: 5px;
-        background-color: #4CAF50;
-        color: white;
-        cursor: pointer;
-    }
-    ul {
-        list-style: none;
-        padding: 0;
-        width: 80%;
-        max-width: 400px;
-    }
-    li {
-        background: rgba(255,255,255,0.9);
-        margin: 5px 0;
-        padding: 10px;
-        border-radius: 5px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    .delete-btn {
-        background-color: red;
-        padding: 5px 10px;
-        border-radius: 5px;
-        color: white;
-        cursor: pointer;
-    }
-</style>
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0; font-family: ui-rounded, system-ui, -apple-system, "Segoe UI", Roboto, Arial, "Noto Kufi Arabic","Noto Sans Arabic",sans-serif; background:var(--bg); color:var(--text)}
+
+    header{position:sticky; top:0; z-index:10; background:linear-gradient(180deg, rgba(255,255,255,.9), rgba(255,255,255,.7)); backdrop-filter: blur(8px); border-bottom:1px solid var(--line)}
+    @media (prefers-color-scheme: dark){header{background:linear-gradient(180deg, rgba(11,18,32,.9), rgba(11,18,32,.6));}}
+    .container{max-width:980px; margin:0 auto; padding:16px}
+    .brand{display:flex; align-items:center; gap:12px}
+    .logo{width:40px; height:40px; border-radius:12px; background:linear-gradient(135deg, var(--accent), var(--accent-2)); display:grid; place-items:center; font-weight:800; color:#fff; box-shadow:var(--shadow)}
+    .brand h1{margin:0; font-size:clamp(20px, 3.5vw, 28px)}
+
+    .app{margin:24px auto; padding:16px; background:var(--card); border:1px solid var(--line); border-radius:18px; box-shadow:var(--shadow)}
+
+    .grid{display:grid; grid-template-columns: 1fr; gap:16px}
+    @media (min-width:860px){.grid{grid-template-columns:1fr 1fr}}
+
+    .row{display:flex; gap:8px; flex-wrap:wrap}
+    .input{flex:1; min-width:220px; background:#fff; border:1px solid var(--line); color:var(--text); padding:12px 14px; border-radius:12px; outline:none}
+    .input:focus{border-color:var(--accent)}
+    @media (prefers-color-scheme: dark){.input{background:#0b1220;}}
+    .btn{border:0; padding:12px 14px; border-radius:12px; cursor:pointer; font-weight:600}
+    .btn-primary{color:#fff; background:linear-gradient(135deg, var(--accent), var(--accent-2))}
+    .btn-ghost{background:transparent; color:var(--text); border:1px solid var(--line)}
+    .btn-danger{background:linear-gradient(135deg, #f87171, #ef4444); color:#fff}
+    .btn-ok{background:linear-gradient(135deg, #34d399, #10b981); color:#0b1322}
+
+    .section-title{display:flex; align-items:center; justify-content:space-between; margin:0 0 8px}
+    .section-title h3{margin:0; font-size:18px}
+    .muted{color:var(--muted); font-size:13px}
+
+    ul{list-style:none; padding:0; margin:12px 0 0}
+    li.task{display:flex; align-items:center; gap:12px; padding:12px; margin:10px 0; background: #fff; border:1px solid var(--line); border-radius:14px}
+    @media (prefers-color-scheme: dark){li.task{background:#0b1220}}
+    .task input[type="checkbox"]{width:20px; height:20px}
+    .task .text{flex:1; word-break:break-word}
+    .task.done .text{opacity:.65; text-decoration: line-through}
+    .task time{font-size:12px; color:var(--muted)}
+    .task .actions{display:flex; gap:6px}
+
+    footer{opacity:.8; text-align:center; padding:20px; font-size:12px}
+  </style>
 </head>
 <body>
+  <header>
+    <div class="container brand">
+      <div class="logo">L</div>
+      <h1>lynka to do list</h1>
+    </div>
+  </header>
 
-<h1>📝 Lynka To Do List</h1>
+  <main class="container">
+    <section class="app">
+      <div class="row" style="margin-bottom:12px">
+        <input id="taskInput" class="input" placeholder="اكتب مهمة واضغط إضافة أو Enter" />
+        <button id="addBtn" class="btn btn-primary">إضافة</button>
+        <button id="clearCompletedBtn" class="btn btn-ghost" title="حذف المهام المنجزة">حذف المُنجز</button>
+      </div>
 
-<div>
-    <input type="text" id="taskInput" placeholder="Add new task...">
-    <button onclick="addTask()">Add</button>
-</div>
+      <div class="grid">
+        <div>
+          <div class="section-title">
+            <h3>المهام النشطة</h3>
+            <span class="muted" id="countActive">0</span>
+          </div>
+          <ul id="listActive"></ul>
+        </div>
 
-<ul id="taskList"></ul>
+        <div>
+          <div class="section-title">
+            <h3>المهام المُنجزة</h3>
+            <span class="muted" id="countDone">0</span>
+          </div>
+          <ul id="listDone"></ul>
+        </div>
+      </div>
+    </section>
 
-<script>
-    let tasks = [];
+    <footer>قائمة مهام مشتركة بواجهة هادئة—مزامنة فورية عبر Firebase Firestore</footer>
+  </main>
 
-    function addTask() {
-        const taskInput = document.getElementById('taskInput');
-        const taskText = taskInput.value.trim();
-        if (taskText !== "") {
-            tasks.push(taskText);
-            taskInput.value = "";
-            renderTasks();
+  <!-- Firebase (compat v9) -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+
+  <script>
+    // ⚙️ إعدادات Firebase—تم ملؤها من مشروعك
+    const firebaseConfig = {
+      apiKey: "AIzaSyCnM6-7BoICLWAXUeH8qz8A_OCicGpQtMU",
+      authDomain: "lynka-to-do-list-eb2ac.firebaseapp.com",
+      projectId: "lynka-to-do-list-eb2ac",
+      storageBucket: "lynka-to-do-list-eb2ac.appspot.com",
+      messagingSenderId: "202285237255",
+      appId: "1:202285237255:web:c12e66369d033e4ecd96a2"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+    const tasksRef = db.collection('tasks');
+
+    // عناصر الواجهة
+    const input = document.getElementById('taskInput');
+    const addBtn = document.getElementById('addBtn');
+    const clearCompletedBtn = document.getElementById('clearCompletedBtn');
+    const listActive = document.getElementById('listActive');
+    const listDone = document.getElementById('listDone');
+    const countActive = document.getElementById('countActive');
+    const countDone = document.getElementById('countDone');
+
+    // إضافة مهمة
+    async function addTask(){
+      const text = (input.value || '').trim();
+      if(!text) return;
+      await tasksRef.add({
+        text,
+        done: false,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      input.value='';
+      input.focus();
+    }
+    addBtn.addEventListener('click', addTask);
+    input.addEventListener('keydown', (e)=>{ if(e.key==='Enter') addTask(); });
+
+    // حذف كل المهام المنجزة
+    clearCompletedBtn.addEventListener('click', async ()=>{
+      const doneDocs = await tasksRef.where('done','==',true).get();
+      const batch = db.batch();
+      doneDocs.forEach(d=> batch.delete(d.ref));
+      await batch.commit();
+    });
+
+    // عناصر كل مهمة
+    function taskItem(doc){
+      const data = doc.data();
+      const li = document.createElement('li');
+      li.className = 'task' + (data.done ? ' done' : '');
+      li.dataset.id = doc.id;
+
+      const checkbox = document.createElement('input');
+      checkbox.type='checkbox';
+      checkbox.checked = !!data.done;
+      checkbox.addEventListener('change', ()=>{ doc.ref.update({done: checkbox.checked}); });
+
+      const text = document.createElement('div');
+      text.className = 'text';
+      text.textContent = data.text;
+
+      const meta = document.createElement('time');
+      if(data.createdAt?.toDate){
+        const d = data.createdAt.toDate();
+        meta.textContent = d.toLocaleString('ar-EG');
+      }
+
+      const actions = document.createElement('div');
+      actions.className = 'actions';
+
+      const del = document.createElement('button');
+      del.className = 'btn btn-danger';
+      del.textContent = 'حذف';
+      del.title = 'حذف المهمة';
+      del.addEventListener('click', ()=> doc.ref.delete());
+
+      actions.appendChild(del);
+
+      li.appendChild(checkbox);
+      li.appendChild(text);
+      li.appendChild(meta);
+      li.appendChild(actions);
+
+      return li;
+    }
+
+    // متابعة فورية + تقسيم إلى قائمتين (نشطة/منجزة)
+    tasksRef.orderBy('createdAt','desc').onSnapshot(snap=>{
+      listActive.innerHTML = '';
+      listDone.innerHTML = '';
+      let active=0, done=0;
+
+      snap.docs.forEach(doc=>{
+        const el = taskItem(doc);
+        if(doc.data().done){
+          listDone.appendChild(el); done++;
+        } else {
+          listActive.appendChild(el); active++;
         }
-    }
+      });
 
-    function deleteTask(index) {
-        tasks.splice(index, 1);
-        renderTasks();
-    }
+      countActive.textContent = active + ' نشطة';
+      countDone.textContent = done + ' مُنجزة';
+    });
 
-    function renderTasks() {
-        const taskList = document.getElementById('taskList');
-        taskList.innerHTML = "";
-        tasks.forEach((task, index) => {
-            const li = document.createElement('li');
-            li.innerHTML = `${task} <span class="delete-btn" onclick="deleteTask(${index})">Delete</span>`;
-            taskList.appendChild(li);
-        });
-    }
-</script>
-
+    // ملاحظة أمان: للوضع الإنتاجي فعّل قواعد أدق/مصادقة لاحقًا
+  </script>
 </body>
 </html>
+
+
+تمام — عدّلت الصفحة علشان تبقى بألوان هادئة وبروفشنال، وكمان بقي فيها قسمين:
+
+المهام النشطة (اللي لسه شغّالة)
+
+المهام المُنجزة (اللي اتعملت) مع إمكانية الرجوع عنها بمجرد تشيل العلامة ✅ أو تحذفها نهائيًا
+
+
+كل حاجة متزامنة لحظيًا بينك وبين شريكك.
+
+تعمل إيه دلوقتي؟
+
+1. افتح ريبوك: github.com/A4nassef/lynka-to-do-list
+
+
+2. ادخل على index.html → اضغط Edit.
+
+
+3. امسح المحتوى القديم والصق الكود الجديد اللي قدّامك في الكانڤاس (تم تحديثه باسمك وFirebase بتاعك).
+
+
+4. Commit changes.
+
+
+5. افتح موقعك: https://a4nassef.github.io/lynka-to-do-list/
+
+جرّب تضيف مهمة.
+
+علّم عليها ✅ هتروح تلقائيًا لقائمة المُنجزة.
+
+تقدر ترجعها لِلنشطة بإلغاء العلامة، أو تحذفها بزر حذف.
+
+
+
+
+لو عايز نزود زر “استرجاع” منفصل في قائمة المُنجزة، أو نخلي فيه تأكيد قبل الحذف — أطبّقهولك فورًا.
+
+
