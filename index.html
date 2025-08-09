@@ -9,7 +9,7 @@
       --text:#0f172a; --muted:#64748b; --line:#e5e7eb; --card:#ffffff;
       --shadow:0 12px 40px rgba(2,6,23,.06); --radius:18px;
 
-      /* ألوان “خلفية الأقسام” لكل تبويب (فاتحة جدًا) */
+      /* خلفيات فاتحة جدًا لكل تبويب */
       --sec-tasks:#EAF4FF;     /* أزرق فاتح */
       --sec-prices:#F2E8FF;    /* بنفسجي فاتح */
       --sec-orders:#FFF4E5;    /* برتقالي فاتح */
@@ -17,7 +17,7 @@
       --sec-clients:#FFEFF5;   /* وردي فاتح */
       --sec-inventory:#F0F4F8; /* رمادي أزرق فاتح */
 
-      /* ألوان مميزة للتابات نفسها */
+      /* ألوان التابات */
       --tab-tasks:#4F7DF7;
       --tab-prices:#10B981;
       --tab-orders:#7C3AED;
@@ -41,7 +41,7 @@
     .logo{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#5b6cff,#19c6d1);display:grid;place-items:center;color:#fff;font-weight:900;box-shadow:var(--shadow)}
     .brand h1{margin:0;font-size:20px}
 
-    /* Tabs (Chrome-like) — كل تبويب ملون */
+    /* Tabs (Chrome-like) — التاب نفسه ملون */
     .tabs{display:flex;gap:10px;flex-wrap:wrap;padding:10px 0 14px}
     .tab{
       --accent:#5b6cff;
@@ -113,23 +113,25 @@
 
     .hide{display:none} .muted{color:var(--muted)}
 
-    /* Welcome Banner */
-    .welcome{
-      position:fixed; inset:0; display:grid; place-items:center;
-      background:rgba(15,23,42,.08); backdrop-filter:blur(4px);
-      animation: fadeIn .25s ease-out forwards;
-      z-index:100;
+    /* Welcome (ضمان الاختفاء) */
+    #welcome{
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #2563EB;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 18px;
+      box-shadow: 0 10px 30px rgba(2,6,23,.15);
+      opacity: 0;
+      transition: opacity .25s ease;
+      z-index: 9999;
+      display: none;
     }
-    .welcome .box{
-      background:#ffffff; border:1px solid var(--line); border-radius:20px; padding:22px 26px;
-      box-shadow:0 24px 80px rgba(2,6,23,.18);
-      font-weight:900; font-size:22px; letter-spacing:.2px;
-      animation: pop .35s cubic-bezier(.2,.7,.2,1) forwards;
-    }
-    .welcome .sub{margin-top:6px; font-size:13px; color:var(--muted); text-align:center}
-    @keyframes fadeIn{ from{opacity:0} to{opacity:1} }
-    @keyframes pop{ from{ transform:translateY(12px) scale(.97); opacity:.0 } to{ transform:translateY(0) scale(1); opacity:1 } }
-    @keyframes fadeOut{ to{ opacity:0; visibility:hidden } }
+    #welcome.show{ display:block !important; opacity:1 !important; }
+    #welcome.hide{ display:none !important; opacity:0 !important; }
   </style>
 </head>
 <body>
@@ -164,13 +166,8 @@
     </div>
   </div>
 
-  <!-- Welcome overlay -->
-  <div id="welcome" class="welcome hide">
-    <div class="box">
-      Welcome Steven and Nassef
-      <div class="sub">Have a productive session with Lynka ✨</div>
-    </div>
-  </div>
+  <!-- Welcome (يظهر 1 ثانية ويختفي أكيد) -->
+  <div id="welcome">Welcome Steven and Nassef</div>
 
   <div class="wrap hide" id="app" style="margin-top:16px">
     <div class="kpis">
@@ -333,6 +330,18 @@
       show($('#s-'+t.dataset.s));
     }));
 
+    // Welcome (1s, guaranteed)
+    function showWelcome(duration = 1000){
+      const el = document.getElementById('welcome');
+      if(!el) return;
+      el.classList.remove('hide');
+      el.classList.add('show');
+      setTimeout(()=>{
+        el.classList.remove('show');
+        el.classList.add('hide');   // display:none
+      }, duration);
+    }
+
     // Auth
     $('#loginBtn').onclick = async()=>{
       $('#authMsg').textContent='';
@@ -345,12 +354,7 @@
         hide($('#authCard')); show($('#app'));
         $('#userEmail').textContent = u.email; $('#userEmail').style.display='inline'; $('#logoutBtn').style.display='inline';
         initApp();
-
-        // Welcome 1s only
-        const w = $('#welcome');
-        w.classList.remove('hide');
-        setTimeout(()=>{ w.style.animation='fadeOut .3s ease forwards'; }, 1000); // تظهر ثانية واحدة
-        setTimeout(()=>{ w.classList.add('hide'); w.style.animation=''; }, 1400);
+        showWelcome(1000); // ثانية واحدة فقط
       } else {
         show($('#authCard')); hide($('#app'));
         $('#userEmail').style.display='none'; $('#logoutBtn').style.display='none';
