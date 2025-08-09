@@ -28,6 +28,7 @@
     .tab[data-tab="todo"].active{background:linear-gradient(135deg,#4f46e5,#22d3ee)}
     .tab[data-tab="prices"].active{background:linear-gradient(135deg,#059669,#34d399)}
     .tab[data-tab="orders"].active{background:linear-gradient(135deg,#7c3aed,#f59e0b)}
+    .tab[data-tab="finance"].active{background:linear-gradient(135deg,#2563eb,#06b6d4)}
     .card{margin:16px 0;padding:18px;background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
     .row{display:flex;gap:8px;flex-wrap:wrap}
     .input{flex:1;min-width:180px;background:#fff;border:1px solid var(--line);color:var(--text);padding:12px 14px;border-radius:12px;outline:none}
@@ -39,16 +40,15 @@
     .section-title h3{margin:0;font-size:18px}
     .muted{color:var(--muted);font-size:13px}
     ul{list-style:none;padding:0;margin:12px 0 0}
-    li.item{display:flex;align-items:center;gap:12px;padding:14px;margin:10px 0;background:#fff;border:1px solid var(--line);border-radius:14px}
-    .checkbox{appearance:none;width:22px;height:22px;border-radius:6px;border:2px solid rgba(100,116,139,.6);display:grid;place-items:center}
+    li.item{display:flex;align-items:flex-start;gap:12px;padding:14px;margin:10px 0;background:#fff;border:1px solid var(--line);border-radius:14px}
+    .checkbox{appearance:none;width:22px;height:22px;border-radius:6px;border:2px solid rgba(100,116,139,.6);display:grid;place-items:center;flex-shrink:0;margin-top:2px}
     .checkbox::after{content:"";width:12px;height:12px;border-radius:3px;transform:scale(0);background:linear-gradient(135deg,var(--accent),var(--accent2));transition:transform .18s}
     .checkbox:checked{border-color:transparent;background:rgba(59,130,246,.15)}
     .checkbox:checked::after{transform:scale(1)}
-    .text{flex:1;word-break:break-word}
+    .text{flex:1;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.6}
     time{font-size:12px;color:var(--muted)}
     .actions{display:flex;gap:6px}
-    .grid{display:grid;grid-template-columns:1fr;gap:16px}
-    @media(min-width:860px){.grid{grid-template-columns:1fr 1fr}}
+    .lists-stack{display:block}
     .divider{height:1px;background:var(--line);margin:6px 0 10px}
     table{width:100%;border-collapse:separate;border-spacing:0 8px}
     th,td{text-align:right;padding:12px;background:#fff;border:1px solid var(--line)}
@@ -62,10 +62,14 @@
     .auth-card h2{margin:0 0 8px}
     .auth-row{display:flex;flex-direction:column;gap:8px;margin:12px 0}
     .err{color:#b91c1c;font-size:13px;min-height:18px}
+    /* finance */
+    .two-col{display:grid;gap:14px}
+    @media(min-width:820px){ .two-col{grid-template-columns:1fr 1fr} }
+    .total{display:flex;justify-content:space-between;gap:10px;margin-top:8px;font-weight:800}
   </style>
 </head>
 <body>
-  <!-- شاشة تسجيل الدخول -->
+  <!-- Auth -->
   <div id="authGate">
     <div class="auth-card">
       <h2>تسجيل دخول Lynka</h2>
@@ -94,6 +98,7 @@
       <button class="tab active" data-tab="todo">قائمة المهام</button>
       <button class="tab" data-tab="prices">الأسعار</button>
       <button class="tab" data-tab="orders">الأوردرات</button>
+      <button class="tab" data-tab="finance">مصروفات وأرباح</button>
     </div>
   </header>
 
@@ -106,8 +111,8 @@
         <button id="clearCompletedBtn" class="btn btn-ghost" title="حذف المهام المنجزة">حذف المُنجز</button>
       </div>
       <div class="divider"></div>
-      <div class="grid">
-        <div>
+      <div class="lists-stack">
+        <div style="margin-bottom:18px">
           <div class="section-title"><h3>المهام النشطة</h3><span class="muted" id="countActive">0</span></div>
           <ul id="listActive"></ul>
         </div>
@@ -145,15 +150,50 @@
         <tbody id="ordersBody"></tbody>
       </table>
     </section>
+
+    <!-- مصروفات وأرباح -->
+    <section id="tab-finance" class="card hidden" style="--accent:#2563eb;--accent2:#06b6d4;">
+      <div class="two-col">
+        <!-- المصروفات -->
+        <div>
+          <div class="section-title"><h3>المصروفات</h3></div>
+          <div class="row" style="margin-bottom:10px">
+            <input id="expNote" class="input" placeholder="وصف المصروف" />
+            <input id="expAmount" class="input" type="number" step="0.01" placeholder="المبلغ" />
+            <button id="addExpBtn" class="btn btn-primary">إضافة</button>
+          </div>
+          <table>
+            <thead><tr><th>البند</th><th>المبلغ</th><th>تاريخ</th><th>إجراء</th></tr></thead>
+            <tbody id="expBody"></tbody>
+          </table>
+          <div class="total"><span>إجمالي المصروفات</span><span id="expTotal">0</span></div>
+        </div>
+
+        <!-- الأرباح -->
+        <div>
+          <div class="section-title"><h3>الأرباح</h3></div>
+          <div class="row" style="margin-bottom:10px">
+            <input id="revNote" class="input" placeholder="وصف الربح" />
+            <input id="revAmount" class="input" type="number" step="0.01" placeholder="المبلغ" />
+            <button id="addRevBtn" class="btn btn-primary">إضافة</button>
+          </div>
+          <table>
+            <thead><tr><th>البند</th><th>المبلغ</th><th>تاريخ</th><th>إجراء</th></tr></thead>
+            <tbody id="revBody"></tbody>
+          </table>
+          <div class="total"><span>إجمالي الأرباح</span><span id="revTotal">0</span></div>
+        </div>
+      </div>
+    </section>
   </main>
 
-  <!-- Firebase compat SDKs (طريقة واحدة فقط) -->
+  <!-- Firebase compat SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
 
   <script>
-    // بيانات مشروعك (من Firebase → Settings → Your apps)
+    // إعدادات مشروعك
     const firebaseConfig = {
       apiKey: "AIzaSyCnM6-7BoICLWAXUeH8qz8A_OCiCGpQtMU",
       authDomain: "lynka-to-do-list-eb2ac.firebaseapp.com",
@@ -163,12 +203,11 @@
       appId: "1:202285237255:web:c12e66369d033e4ecd96a2"
     };
 
-    // تهيئة Firebase (compat)
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db   = firebase.firestore();
 
-    // ======= Auth Gate =======
+    // ====== Auth ======
     const authGate = document.getElementById('authGate');
     const appRoot  = document.getElementById('appRoot');
     const emailEl  = document.getElementById('authEmail');
@@ -208,12 +247,13 @@
       }
     });
 
-    // ======= Tabs =======
+    // ====== Tabs ======
     const tabsEl = document.getElementById('tabs');
     const sections = {
       todo:   document.getElementById('tab-todo'),
       prices: document.getElementById('tab-prices'),
-      orders: document.getElementById('tab-orders')
+      orders: document.getElementById('tab-orders'),
+      finance:document.getElementById('tab-finance')
     };
     tabsEl.addEventListener('click',(e)=>{
       const btn = e.target.closest('.tab'); if(!btn) return;
@@ -222,10 +262,8 @@
       const key = btn.dataset.tab;
       Object.entries(sections).forEach(([k,sec])=>sec.classList.toggle('hidden',k!==key));
     });
-    // فعل أول تاب شكليًا
-    tabsEl.querySelector('.tab[data-tab="todo"]').classList.add('active');
 
-    // ======= TODO =======
+    // ====== TODO ======
     const tasksRef = db.collection('tasks');
     const taskInput = document.getElementById('taskInput');
     const addTaskBtn = document.getElementById('addTaskBtn');
@@ -261,11 +299,14 @@
       const cb = document.createElement('input'); cb.type='checkbox'; cb.className='checkbox'; cb.checked=!!d.done;
       cb.addEventListener('change', ()=> doc.ref.update({done: cb.checked}));
       const text = document.createElement('div'); text.className='text'; text.textContent=d.text;
-      const time = document.createElement('time'); if(d.createdAt?.toDate){ time.textContent=d.createdAt.toDate().toLocaleString('ar-EG'); }
+      const wrap = document.createElement('div'); wrap.style.display='flex'; wrap.style.flexDirection='column'; wrap.style.gap='4px'; wrap.append(text);
+      const meta = document.createElement('time');
+      if(d.createdAt?.toDate){ meta.textContent=d.createdAt.toDate().toLocaleString('ar-EG'); }
+      wrap.appendChild(meta);
       const actions = document.createElement('div'); actions.className='actions';
       const del = document.createElement('button'); del.className='btn btn-danger'; del.textContent='حذف'; del.addEventListener('click', ()=> doc.ref.delete());
       actions.appendChild(del);
-      li.append(cb,text,time,actions);
+      li.append(cb, wrap, actions);
       return li;
     }
     tasksRef.orderBy('createdAt','desc').onSnapshot(snap=>{
@@ -278,7 +319,7 @@
       countDone.textContent = dn + ' مُنجزة';
     });
 
-    // ======= PRICES =======
+    // ====== PRICES ======
     const productsRef = db.collection('products');
     const productName = document.getElementById('productName');
     const productPrice = document.getElementById('productPrice');
@@ -317,7 +358,7 @@
       snap.docs.forEach(doc=> productsBody.appendChild(productRow(doc)) );
     });
 
-    // ======= ORDERS =======
+    // ====== ORDERS ======
     const ordersRef = db.collection('orders');
     const orderTitle = document.getElementById('orderTitle');
     const orderTotal = document.getElementById('orderTotal');
@@ -354,6 +395,80 @@
     ordersRef.orderBy('createdAt','desc').onSnapshot(snap=>{
       ordersBody.innerHTML='';
       snap.docs.forEach(doc=> ordersBody.appendChild(orderRow(doc)) );
+    });
+
+    // ====== FINANCE (Expenses / Revenues) ======
+    const expensesRef = db.collection('expenses');
+    const revenuesRef = db.collection('revenues');
+
+    // Elements
+    const expNote   = document.getElementById('expNote');
+    const expAmount = document.getElementById('expAmount');
+    const addExpBtn = document.getElementById('addExpBtn');
+    const expBody   = document.getElementById('expBody');
+    const expTotal  = document.getElementById('expTotal');
+
+    const revNote   = document.getElementById('revNote');
+    const revAmount = document.getElementById('revAmount');
+    const addRevBtn = document.getElementById('addRevBtn');
+    const revBody   = document.getElementById('revBody');
+    const revTotal  = document.getElementById('revTotal');
+
+    // Add
+    async function addExpense(){
+      const note = (expNote.value||'').trim();
+      const amt  = parseFloat(expAmount.value);
+      if(!note || isNaN(amt)) return;
+      await expensesRef.add({
+        note, amount: amt,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        uid: auth.currentUser?.uid || null
+      });
+      expNote.value=''; expAmount.value='';
+    }
+    async function addRevenue(){
+      const note = (revNote.value||'').trim();
+      const amt  = parseFloat(revAmount.value);
+      if(!note || isNaN(amt)) return;
+      await revenuesRef.add({
+        note, amount: amt,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        uid: auth.currentUser?.uid || null
+      });
+      revNote.value=''; revAmount.value='';
+    }
+    addExpBtn.addEventListener('click', addExpense);
+    addRevBtn.addEventListener('click', addRevenue);
+    expNote.addEventListener('keydown', e=>{ if(e.key==='Enter') addExpense(); });
+    expAmount.addEventListener('keydown', e=>{ if(e.key==='Enter') addExpense(); });
+    revNote.addEventListener('keydown', e=>{ if(e.key==='Enter') addRevenue(); });
+    revAmount.addEventListener('keydown', e=>{ if(e.key==='Enter') addRevenue(); });
+
+    // Rows
+    function financeRow(doc){
+      const d = doc.data();
+      const tr = document.createElement('tr');
+      const tdNote = document.createElement('td'); tdNote.textContent=d.note;
+      const tdAmt  = document.createElement('td'); tdAmt.innerHTML = `<span class="price">${Number(d.amount).toLocaleString('ar-EG')}</span>`;
+      const tdDate = document.createElement('td'); if(d.createdAt?.toDate){ tdDate.textContent=d.createdAt.toDate().toLocaleString('ar-EG'); }
+      const tdAct  = document.createElement('td');
+      const del = document.createElement('button'); del.className='btn btn-danger'; del.textContent='حذف'; del.addEventListener('click', ()=> doc.ref.delete());
+      tdAct.appendChild(del);
+      tr.append(tdNote, tdAmt, tdDate, tdAct);
+      return tr;
+    }
+
+    // Live listeners + totals
+    expensesRef.orderBy('createdAt','desc').onSnapshot(snap=>{
+      expBody.innerHTML=''; let sum=0;
+      snap.docs.forEach(doc=>{ expBody.appendChild(financeRow(doc)); sum += Number(doc.data().amount)||0; });
+      expTotal.textContent = sum.toLocaleString('ar-EG');
+    });
+
+    revenuesRef.orderBy('createdAt','desc').onSnapshot(snap=>{
+      revBody.innerHTML=''; let sum=0;
+      snap.docs.forEach(doc=>{ revBody.appendChild(financeRow(doc)); sum += Number(doc.data().amount)||0; });
+      revTotal.textContent = sum.toLocaleString('ar-EG');
     });
   </script>
 </body>
