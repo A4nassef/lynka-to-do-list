@@ -6,23 +6,32 @@
   <title>Lynka — لوحة الإدارة</title>
   <style>
     :root{
-      --bg:#F6F8FC;
       --text:#0f172a; --muted:#64748b; --line:#e5e7eb; --card:#ffffff;
       --shadow:0 12px 40px rgba(2,6,23,.06); --radius:18px;
-      /* ألوان التابات */
-      --tab-tasks:#6366F1;
+
+      /* ألوان “خلفية الأقسام” لكل تبويب (فاتحة جدًا) */
+      --sec-tasks:#EAF4FF;     /* أزرق فاتح */
+      --sec-prices:#F2E8FF;    /* بنفسجي فاتح */
+      --sec-orders:#FFF4E5;    /* برتقالي فاتح */
+      --sec-finance:#E9FFF1;   /* أخضر فاتح */
+      --sec-clients:#FFEFF5;   /* وردي فاتح */
+      --sec-inventory:#F0F4F8; /* رمادي أزرق فاتح */
+
+      /* ألوان مميزة للتابات نفسها */
+      --tab-tasks:#4F7DF7;
       --tab-prices:#10B981;
       --tab-orders:#7C3AED;
       --tab-finance:#0EA5E9;
       --tab-clients:#F97316;
       --tab-inventory:#14B8A6;
-      /* خلفيات فاتحة جدًا للأقسام */
-      --section-blue:#F7FBFF;   /* أزرق فاتح جدًا */
+
+      /* حالات المهام */
       --task-active-bg:#F2F8FF; /* غير منجزة */
-      --task-done-bg:#ECFDF5;   /* أخضر فاتح جدًا */
+      --task-done-bg:#ECFDF5;   /* منجزة */
     }
+
     *{box-sizing:border-box}
-    html,body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Tahoma,Arial}
+    html,body{margin:0;background:#F6F8FC;color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Tahoma,Arial}
     .wrap{max-width:1040px;margin:0 auto;padding:0 16px}
 
     /* Topbar */
@@ -32,21 +41,22 @@
     .logo{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#5b6cff,#19c6d1);display:grid;place-items:center;color:#fff;font-weight:900;box-shadow:var(--shadow)}
     .brand h1{margin:0;font-size:20px}
 
-    /* Tabs (Chrome-like) */
+    /* Tabs (Chrome-like) — كل تبويب ملون */
     .tabs{display:flex;gap:10px;flex-wrap:wrap;padding:10px 0 14px}
     .tab{
       --accent:#5b6cff;
-      position:relative;padding:14px 20px;border:1px solid var(--line);border-bottom:none;background:#fff;
+      position:relative;padding:14px 20px;border:1px solid var(--line);border-bottom:none;
+      background:color-mix(in oklab, var(--accent) 12%, #ffffff);
       border-top-left-radius:18px;border-top-right-radius:18px;font-weight:900;cursor:pointer;
-      box-shadow:0 6px 20px rgba(2,6,23,.06);transform:translateY(6px);opacity:.92;
+      box-shadow:0 6px 20px rgba(2,6,23,.06);transform:translateY(6px);opacity:.94;color:#0b1220;
     }
     .tab .dot{width:10px;height:10px;border-radius:999px;display:inline-block;margin-inline-end:8px;background:var(--accent)}
     .tab:hover{opacity:1}
     .tab.active{
-      background:linear-gradient(180deg,#fff, color-mix(in oklab, var(--accent) 6%, #ffffff));
+      background:color-mix(in oklab, var(--accent) 22%, #ffffff);
       border-color:color-mix(in oklab, var(--accent) 45%, var(--line));
       transform:translateY(0);opacity:1;
-      outline:3px solid color-mix(in oklab, var(--accent) 16%, transparent)
+      outline:3px solid color-mix(in oklab, var(--accent) 18%, transparent)
     }
     .tab[data-s="tasks"]{--accent:var(--tab-tasks)}
     .tab[data-s="prices"]{--accent:var(--tab-prices)}
@@ -55,13 +65,18 @@
     .tab[data-s="clients"]{--accent:var(--tab-clients)}
     .tab[data-s="inventory"]{--accent:var(--tab-inventory)}
 
-    /* Cards / inputs */
+    /* Cards / sections */
     .card{
       background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
       box-shadow:var(--shadow);padding:16px;margin:0 0 18px
     }
-    /* كل تبويب يبقى لونه أزرق فاتح جدًا */
-    .section{ background: var(--section-blue); }
+    /* كل قسم بياخد لون الخلفية الخاص بيه */
+    .section[data-s="tasks"]{background:var(--sec-tasks)}
+    .section[data-s="prices"]{background:var(--sec-prices)}
+    .section[data-s="orders"]{background:var(--sec-orders)}
+    .section[data-s="finance"]{background:var(--sec-finance)}
+    .section[data-s="clients"]{background:var(--sec-clients)}
+    .section[data-s="inventory"]{background:var(--sec-inventory)}
 
     .row-flex{display:flex;gap:10px;flex-wrap:wrap}
     .row-flex>*{flex:1 1 160px}
@@ -80,9 +95,10 @@
     /* Prices */
     .price-big{font-size:22px;font-weight:900;letter-spacing:.2px}
 
-    /* Tasks BG states */
+    /* Tasks states */
     .item.task.active{background:var(--task-active-bg)}
     .item.task.done{background:var(--task-done-bg)}
+    .item.task.done .item-title{ text-decoration: line-through; opacity:.85 }
 
     /* Finance 2-cols */
     .two-col{display:grid;gap:14px}
@@ -101,14 +117,14 @@
     .welcome{
       position:fixed; inset:0; display:grid; place-items:center;
       background:rgba(15,23,42,.08); backdrop-filter:blur(4px);
-      animation: fadeIn .35s ease-out forwards;
+      animation: fadeIn .25s ease-out forwards;
       z-index:100;
     }
     .welcome .box{
       background:#ffffff; border:1px solid var(--line); border-radius:20px; padding:22px 26px;
       box-shadow:0 24px 80px rgba(2,6,23,.18);
       font-weight:900; font-size:22px; letter-spacing:.2px;
-      animation: pop .45s cubic-bezier(.2,.7,.2,1) forwards;
+      animation: pop .35s cubic-bezier(.2,.7,.2,1) forwards;
     }
     .welcome .sub{margin-top:6px; font-size:13px; color:var(--muted); text-align:center}
     @keyframes fadeIn{ from{opacity:0} to{opacity:1} }
@@ -122,7 +138,7 @@
       <div class="brand"><div class="logo">L</div><h1>Lynka — لوحة الإدارة</h1></div>
       <div style="margin-inline-start:auto;display:flex;align-items:center;gap:8px">
         <span id="userEmail" class="muted" style="display:none;font-size:12px"></span>
-        <button id="logoutBtn" class="tab" style="padding:8px 14px;transform:none;border-bottom:1px solid var(--line)">تسجيل الخروج</button>
+        <button id="logoutBtn" class="tab" style="--accent:#6b7280;padding:8px 14px;transform:none;border-bottom:1px solid var(--line)">تسجيل الخروج</button>
       </div>
     </div>
     <div class="wrap tabs" id="tabs">
@@ -137,7 +153,7 @@
 
   <!-- Auth -->
   <div class="wrap" id="authCard" style="margin-top:16px">
-    <div class="card section" style="text-align:center">
+    <div class="card section" data-s="tasks" style="text-align:center">
       <h2 style="margin:6px 0 12px">تسجيل دخول Lynka</h2>
       <div class="row-flex">
         <input id="email" placeholder="1@lynka.com أو 2@lynka.com" />
@@ -165,7 +181,7 @@
     </div>
 
     <!-- TASKS -->
-    <section id="s-tasks" class="card section" style="--accent:var(--tab-tasks)">
+    <section id="s-tasks" class="card section" data-s="tasks">
       <h3 style="margin-top:0">قائمة المهام</h3>
       <div class="row-flex">
         <textarea id="taskText" placeholder="اكتب مهمة (يسمح بنص طويل)…"></textarea>
@@ -174,7 +190,7 @@
           <option>مهم</option><option>عميل</option><option>توصيل</option>
         </select>
         <input type="date" id="taskDue" placeholder="تاريخ (اختياري | optional)" title="اختياري">
-        <button class="btn" id="addTask">إضافة</button>
+        <button class="btn" id="addTask" style="--accent:var(--tab-tasks)">إضافة</button>
         <button class="btn-ghost" id="clearSelectedTasks">حذف المحدد</button>
       </div>
 
@@ -196,33 +212,33 @@
     </section>
 
     <!-- PRICES -->
-    <section id="s-prices" class="card section" style="--accent:var(--tab-prices)">
+    <section id="s-prices" class="card section" data-s="prices">
       <h3 style="margin-top:0">الأسعار</h3>
       <div class="row-flex">
         <input id="pName" placeholder="اسم المنتج" />
         <input id="pRetail" type="number" step="0.01" placeholder="سعر التجزئة" />
         <input id="pWholesale" type="number" step="0.01" placeholder="سعر الجملة (اختياري | optional)" />
         <select id="pUnit"><option>قطعة</option><option>علبة</option><option>كيلو</option></select>
-        <button class="btn" id="addPrice">إضافة</button>
+        <button class="btn" id="addPrice" style="--accent:var(--tab-prices)">إضافة</button>
       </div>
       <div class="list" id="pricesList"></div>
     </section>
 
     <!-- ORDERS -->
-    <section id="s-orders" class="card section" style="--accent:var(--tab-orders)">
+    <section id="s-orders" class="card section" data-s="orders">
       <h3 style="margin-top:0">الأوردرات</h3>
       <div class="row-flex">
         <input id="oClient" placeholder="اسم العميل (اختياري | optional)" />
         <input id="oTitle" placeholder="وصف مختصر للطلب" />
         <input id="oAmount" type="number" step="0.01" placeholder="الإجمالي (اختياري | optional)" />
         <select id="oStatus"><option>جديد</option><option>قيد التنفيذ</option><option>تم</option><option>ملغي</option></select>
-        <button class="btn" id="addOrder">إضافة</button>
+        <button class="btn" id="addOrder" style="--accent:var(--tab-orders)">إضافة</button>
       </div>
       <div class="list" id="ordersList"></div>
     </section>
 
     <!-- FINANCE -->
-    <section id="s-finance" class="card section" style="--accent:var(--tab-finance)">
+    <section id="s-finance" class="card section" data-s="finance">
       <h3 style="margin-top:0">مصروفات وأرباح</h3>
       <div class="two-col">
         <!-- Expenses -->
@@ -231,7 +247,7 @@
             <input id="exCat" placeholder="فئة المصروف" />
             <input id="exAmount" type="number" step="0.01" placeholder="القيمة" />
             <input id="exNote" placeholder="ملاحظات (اختياري | optional)" />
-            <button class="btn" id="addExpense">إضافة</button>
+            <button class="btn" id="addExpense" style="--accent:var(--tab-finance)">إضافة</button>
           </div>
           <div class="list" id="expensesList"></div>
           <div class="total"><span>إجمالي المصروفات</span><span id="expTotal">0</span></div>
@@ -243,7 +259,7 @@
             <input id="revCat" placeholder="فئة الربح" />
             <input id="revAmount" type="number" step="0.01" placeholder="القيمة" />
             <input id="revNote" placeholder="ملاحظات (اختياري | optional)" />
-            <button class="btn" id="addRevenue">إضافة</button>
+            <button class="btn" id="addRevenue" style="--accent:var(--tab-finance)">إضافة</button>
           </div>
           <div class="list" id="revenuesList"></div>
           <div class="total"><span>إجمالي الأرباح</span><span id="revTotal">0</span></div>
@@ -257,7 +273,7 @@
     </section>
 
     <!-- CLIENTS -->
-    <section id="s-clients" class="card section" style="--accent:var(--tab-clients)">
+    <section id="s-clients" class="card section" data-s="clients">
       <h3 style="margin-top:0">العملاء</h3>
       <div class="row-flex">
         <input id="cName" placeholder="الاسم" />
@@ -265,20 +281,20 @@
         <input id="cEmail" placeholder="البريد (اختياري | optional)" />
         <input id="cAddress" placeholder="العنوان (اختياري | optional)" />
         <input id="cNote" placeholder="ملاحظات (اختياري | optional)" />
-        <button class="btn" id="addClient">إضافة</button>
+        <button class="btn" id="addClient" style="--accent:var(--tab-clients)">إضافة</button>
       </div>
       <div class="list" id="clientsList"></div>
     </section>
 
     <!-- INVENTORY -->
-    <section id="s-inventory" class="card section" style="--accent:var(--tab-inventory)">
+    <section id="s-inventory" class="card section" data-s="inventory">
       <h3 style="margin-top:0">المخزون</h3>
       <div class="row-flex">
         <input id="iName" placeholder="اسم المنتج" />
         <input id="iQty" type="number" step="1" placeholder="الكمية" />
         <input id="iMin" type="number" step="1" placeholder="حد التنبيه (اختياري | optional)" />
         <input id="iSupplier" placeholder="المورد (اختياري | optional)" />
-        <button class="btn" id="addInv">إضافة</button>
+        <button class="btn" id="addInv" style="--accent:var(--tab-inventory)">إضافة</button>
       </div>
       <div class="list" id="invList"></div>
     </section>
@@ -306,7 +322,7 @@
     const $ = s => document.querySelector(s);
     const show = el => el.classList.remove('hide');
     const hide = el => el.classList.add('hide');
-    const fmt = n => (Number(n||0)).toLocaleString('en-US',{maximumFractionDigits:2}); // أرقام إنجليزي
+    const fmt = n => (Number(n||0)).toLocaleString('en-US',{maximumFractionDigits:2}); // English numbers
 
     // Tabs
     const tabs = document.querySelectorAll('.tab');
@@ -329,10 +345,12 @@
         hide($('#authCard')); show($('#app'));
         $('#userEmail').textContent = u.email; $('#userEmail').style.display='inline'; $('#logoutBtn').style.display='inline';
         initApp();
-        // عرض رسالة الترحيب
-        const w = $('#welcome'); w.classList.remove('hide');
-        setTimeout(()=>{ w.style.animation='fadeOut .5s ease forwards'; }, 1800);
-        setTimeout(()=>{ w.classList.add('hide'); w.style.animation=''; }, 2400);
+
+        // Welcome 1s only
+        const w = $('#welcome');
+        w.classList.remove('hide');
+        setTimeout(()=>{ w.style.animation='fadeOut .3s ease forwards'; }, 1000); // تظهر ثانية واحدة
+        setTimeout(()=>{ w.classList.add('hide'); w.style.animation=''; }, 1400);
       } else {
         show($('#authCard')); hide($('#app'));
         $('#userEmail').style.display='none'; $('#logoutBtn').style.display='none';
