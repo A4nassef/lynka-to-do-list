@@ -10,12 +10,16 @@
       --text:#0f172a; --muted:#64748b; --line:#e5e7eb; --card:#ffffff;
       --shadow:0 12px 40px rgba(2,6,23,.06); --radius:18px;
       /* ألوان التابات */
-      --tab-tasks:#6366F1;   /* بنفسجي أزرق */
-      --tab-prices:#10B981;  /* أخضر */
-      --tab-orders:#7C3AED;  /* بنفسجي */
-      --tab-finance:#0EA5E9; /* سماوي */
-      --tab-clients:#F97316; /* برتقالي */
-      --tab-inventory:#14B8A6; /* فيروزي */
+      --tab-tasks:#6366F1;
+      --tab-prices:#10B981;
+      --tab-orders:#7C3AED;
+      --tab-finance:#0EA5E9;
+      --tab-clients:#F97316;
+      --tab-inventory:#14B8A6;
+      /* خلفيات فاتحة جدًا للأقسام */
+      --section-blue:#F7FBFF;   /* أزرق فاتح جدًا */
+      --task-active-bg:#F2F8FF; /* غير منجزة */
+      --task-done-bg:#ECFDF5;   /* أخضر فاتح جدًا */
     }
     *{box-sizing:border-box}
     html,body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Tahoma,Arial}
@@ -52,7 +56,13 @@
     .tab[data-s="inventory"]{--accent:var(--tab-inventory)}
 
     /* Cards / inputs */
-    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;margin:0 0 18px}
+    .card{
+      background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+      box-shadow:var(--shadow);padding:16px;margin:0 0 18px
+    }
+    /* كل تبويب يبقى لونه أزرق فاتح جدًا */
+    .section{ background: var(--section-blue); }
+
     .row-flex{display:flex;gap:10px;flex-wrap:wrap}
     .row-flex>*{flex:1 1 160px}
     input,select,textarea,button{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:#fff;font-size:14px;outline:none}
@@ -70,6 +80,10 @@
     /* Prices */
     .price-big{font-size:22px;font-weight:900;letter-spacing:.2px}
 
+    /* Tasks BG states */
+    .item.task.active{background:var(--task-active-bg)}
+    .item.task.done{background:var(--task-done-bg)}
+
     /* Finance 2-cols */
     .two-col{display:grid;gap:14px}
     @media(min-width:800px){ .two-col{grid-template-columns:1fr 1fr} }
@@ -82,6 +96,24 @@
     .kpi .n{font-weight:900;font-size:20px}
 
     .hide{display:none} .muted{color:var(--muted)}
+
+    /* Welcome Banner */
+    .welcome{
+      position:fixed; inset:0; display:grid; place-items:center;
+      background:rgba(15,23,42,.08); backdrop-filter:blur(4px);
+      animation: fadeIn .35s ease-out forwards;
+      z-index:100;
+    }
+    .welcome .box{
+      background:#ffffff; border:1px solid var(--line); border-radius:20px; padding:22px 26px;
+      box-shadow:0 24px 80px rgba(2,6,23,.18);
+      font-weight:900; font-size:22px; letter-spacing:.2px;
+      animation: pop .45s cubic-bezier(.2,.7,.2,1) forwards;
+    }
+    .welcome .sub{margin-top:6px; font-size:13px; color:var(--muted); text-align:center}
+    @keyframes fadeIn{ from{opacity:0} to{opacity:1} }
+    @keyframes pop{ from{ transform:translateY(12px) scale(.97); opacity:.0 } to{ transform:translateY(0) scale(1); opacity:1 } }
+    @keyframes fadeOut{ to{ opacity:0; visibility:hidden } }
   </style>
 </head>
 <body>
@@ -105,7 +137,7 @@
 
   <!-- Auth -->
   <div class="wrap" id="authCard" style="margin-top:16px">
-    <div class="card" style="text-align:center">
+    <div class="card section" style="text-align:center">
       <h2 style="margin:6px 0 12px">تسجيل دخول Lynka</h2>
       <div class="row-flex">
         <input id="email" placeholder="1@lynka.com أو 2@lynka.com" />
@@ -113,6 +145,14 @@
         <button class="btn" id="loginBtn" style="--accent:#5b6cff">دخول</button>
       </div>
       <div id="authMsg" class="muted" style="margin-top:8px;color:#b91c1c"></div>
+    </div>
+  </div>
+
+  <!-- Welcome overlay -->
+  <div id="welcome" class="welcome hide">
+    <div class="box">
+      Welcome Steven and Nassef
+      <div class="sub">Have a productive session with Lynka ✨</div>
     </div>
   </div>
 
@@ -125,7 +165,7 @@
     </div>
 
     <!-- TASKS -->
-    <section id="s-tasks" class="card" style="--accent:var(--tab-tasks)">
+    <section id="s-tasks" class="card section" style="--accent:var(--tab-tasks)">
       <h3 style="margin-top:0">قائمة المهام</h3>
       <div class="row-flex">
         <textarea id="taskText" placeholder="اكتب مهمة (يسمح بنص طويل)…"></textarea>
@@ -156,7 +196,7 @@
     </section>
 
     <!-- PRICES -->
-    <section id="s-prices" class="card hide" style="--accent:var(--tab-prices)">
+    <section id="s-prices" class="card section" style="--accent:var(--tab-prices)">
       <h3 style="margin-top:0">الأسعار</h3>
       <div class="row-flex">
         <input id="pName" placeholder="اسم المنتج" />
@@ -169,7 +209,7 @@
     </section>
 
     <!-- ORDERS -->
-    <section id="s-orders" class="card hide" style="--accent:var(--tab-orders)">
+    <section id="s-orders" class="card section" style="--accent:var(--tab-orders)">
       <h3 style="margin-top:0">الأوردرات</h3>
       <div class="row-flex">
         <input id="oClient" placeholder="اسم العميل (اختياري | optional)" />
@@ -182,7 +222,7 @@
     </section>
 
     <!-- FINANCE -->
-    <section id="s-finance" class="card hide" style="--accent:var(--tab-finance)">
+    <section id="s-finance" class="card section" style="--accent:var(--tab-finance)">
       <h3 style="margin-top:0">مصروفات وأرباح</h3>
       <div class="two-col">
         <!-- Expenses -->
@@ -217,7 +257,7 @@
     </section>
 
     <!-- CLIENTS -->
-    <section id="s-clients" class="card hide" style="--accent:var(--tab-clients)">
+    <section id="s-clients" class="card section" style="--accent:var(--tab-clients)">
       <h3 style="margin-top:0">العملاء</h3>
       <div class="row-flex">
         <input id="cName" placeholder="الاسم" />
@@ -231,7 +271,7 @@
     </section>
 
     <!-- INVENTORY -->
-    <section id="s-inventory" class="card hide" style="--accent:var(--tab-inventory)">
+    <section id="s-inventory" class="card section" style="--accent:var(--tab-inventory)">
       <h3 style="margin-top:0">المخزون</h3>
       <div class="row-flex">
         <input id="iName" placeholder="اسم المنتج" />
@@ -285,8 +325,18 @@
       }catch(e){ $('#authMsg').textContent = 'Firebase: '+(e.message||'خطأ'); }
     };
     auth.onAuthStateChanged(u=>{
-      if(u){ hide($('#authCard')); show($('#app')); initApp(); $('#userEmail').textContent = u.email; $('#userEmail').style.display='inline'; $('#logoutBtn').style.display='inline'; }
-      else { show($('#authCard')); hide($('#app')); $('#userEmail').style.display='none'; $('#logoutBtn').style.display='none'; }
+      if(u){
+        hide($('#authCard')); show($('#app'));
+        $('#userEmail').textContent = u.email; $('#userEmail').style.display='inline'; $('#logoutBtn').style.display='inline';
+        initApp();
+        // عرض رسالة الترحيب
+        const w = $('#welcome'); w.classList.remove('hide');
+        setTimeout(()=>{ w.style.animation='fadeOut .5s ease forwards'; }, 1800);
+        setTimeout(()=>{ w.classList.add('hide'); w.style.animation=''; }, 2400);
+      } else {
+        show($('#authCard')); hide($('#app'));
+        $('#userEmail').style.display='none'; $('#logoutBtn').style.display='none';
+      }
     });
     $('#logoutBtn').onclick=()=>auth.signOut();
 
@@ -324,7 +374,7 @@
     function renderTask(doc, container){
       const d = doc.data();
       const row = document.createElement('div');
-      row.className='item';
+      row.className = 'item task ' + (d.done ? 'done' : 'active');
       row.innerHTML = `
         <input type="checkbox" class="taskSel" data-id="${doc.id}">
         <div style="flex:1">
