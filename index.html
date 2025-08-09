@@ -1,94 +1,71 @@
 <!doctype html>
-
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Lynka — لوحة الإدارة</title>
-  <meta name="color-scheme" content="light dark">
+  <meta name="color-scheme" content="light">
   <style>
     :root{
       --bg:#E6F2FA; --text:#0f172a; --muted:#6b7280;
-      --card:#ffffffcc; --line:#dfe5ee; --danger:#ef4444;
-      --shadow:0 10px 30px rgba(2,6,23,.08);
-      /* ألوان افتراضية (تتغير لكل تبويب عبر المتغيرات المحلية) */
+      --card:#ffffffcc; --line:#dfe5ee; --shadow:0 10px 30px rgba(2,6,23,.08);
       --accent:#5b6cff; --accent2:#19c6d1;
     }
     *{box-sizing:border-box}
-    body{margin:0;font-family:ui-rounded,system-ui,-apple-system,"Segoe UI",Roboto,Arial,"Noto Kufi Arabic","Noto Sans Arabic",sans-serif;color:var(--text);background:var(--bg)}/* Header */
-header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,rgba(255,255,255,.85),rgba(255,255,255,.65));backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
-.container{max-width:1100px;margin:0 auto;padding:16px}
-.brand{display:flex;align-items:center;justify-content:space-between;gap:12px}
-.brand-left{display:flex;align-items:center;gap:12px}
-.logo{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#5b6cff,#19c6d1);display:grid;place-items:center;font-weight:800;color:#fff;box-shadow:var(--shadow);overflow:hidden}
-.logo img{width:100%;height:100%;object-fit:cover;display:block}
-h1{margin:0;font-size:clamp(18px,3.2vw,26px)}
-
-.userbox{display:flex;align-items:center;gap:10px}
-.userbox .email{font-size:13px;color:var(--muted);background:#fff;border:1px solid var(--line);padding:6px 10px;border-radius:999px}
-.logout{border:0;padding:10px 12px;border-radius:12px;cursor:pointer;font-weight:600;background:#fff;border:1px solid var(--line)}
-
-/* Tabs */
-.tabs{display:flex;gap:10px;flex-wrap:wrap;margin:10px auto 0}
-.tab{position:relative;border:1px solid var(--line);background:#fff;padding:10px 14px;border-radius:12px;cursor:pointer;font-weight:700}
-.tab.active{color:#fff;border-color:transparent}
-.tab[data-tab="todo"].active{background:linear-gradient(135deg,#4f46e5,#22d3ee)}
-.tab[data-tab="prices"].active{background:linear-gradient(135deg,#059669,#34d399)}
-.tab[data-tab="orders"].active{background:linear-gradient(135deg,#7c3aed,#f59e0b)}
-
-.card{margin:16px 0;padding:18px;background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
-
-.row{display:flex;gap:8px;flex-wrap:wrap}
-.input{flex:1;min-width:180px;background:#fff;border:1px solid var(--line);color:var(--text);padding:12px 14px;border-radius:12px;outline:none;transition:border .2s,box-shadow .2s}
-.input:focus{border-color:var(--accent);box-shadow:0 0 0 4px color-mix(in oklab, var(--accent) 18%, transparent)}
-
-.btn{border:0;padding:12px 14px;border-radius:12px;cursor:pointer;font-weight:700;transition:transform .08s ease}
-.btn:active{transform:translateY(1px)}
-.btn-primary{color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent2))}
-.btn-ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
-.btn-danger{background:linear-gradient(135deg,#f87171,#ef4444);color:#fff}
-
-.section-title{display:flex;align-items:center;justify-content:space-between;margin:0 0 8px}
-.section-title h3{margin:0;font-size:18px}
-.muted{color:var(--muted);font-size:13px}
-
-ul{list-style:none;padding:0;margin:12px 0 0}
-li.item{display:flex;align-items:center;gap:12px;padding:14px;margin:10px 0;background:#fff;border:1px solid var(--line);border-radius:14px}
-li.item:hover{box-shadow:0 8px 24px rgba(2,6,23,.08)}
-
-.checkbox{appearance:none;width:22px;height:22px;border-radius:6px;border:2px solid rgba(100,116,139,.6);display:grid;place-items:center;transition:all .18s ease}
-.checkbox::after{content:"";width:12px;height:12px;border-radius:3px;transform:scale(0);background:linear-gradient(135deg,var(--accent),var(--accent2));transition:transform .18s ease}
-.checkbox:checked{border-color:transparent;background:color-mix(in oklab, var(--accent) 18%, transparent)}
-.checkbox:checked::after{transform:scale(1)}
-
-.text{flex:1;word-break:break-word}
-time{font-size:12px;color:var(--muted)}
-.actions{display:flex;gap:6px}
-
-.grid{display:grid;grid-template-columns:1fr;gap:16px}
-@media(min-width:860px){.grid{grid-template-columns:1fr 1fr}}
-.divider{height:1px;background:var(--line);margin:6px 0 10px}
-
-table{width:100%;border-collapse:separate;border-spacing:0 8px}
-th,td{text-align:right;padding:12px;background:#fff;border:1px solid var(--line)}
-th{background:#f9fbff}
-tr td:first-child, tr th:first-child{border-top-right-radius:12px;border-bottom-right-radius:12px}
-tr td:last-child, tr th:last-child{border-top-left-radius:12px;border-bottom-left-radius:12px}
-.price{font-weight:700}
-
-.hidden{display:none}
-
-/* Auth gate */
-#authGate{position:fixed;inset:0;display:grid;place-items:center;background:linear-gradient(180deg,rgba(230,242,250,.85),rgba(230,242,250,.65));backdrop-filter:blur(8px)}
-.auth-card{width:min(94%,420px);background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:18px}
-.auth-card h2{margin:0 0 8px}
-.auth-row{display:flex;flex-direction:column;gap:8px;margin:12px 0}
-.err{color:#b91c1c;font-size:13px;min-height:18px}
-
+    body{margin:0;font-family:ui-rounded,system-ui,-apple-system,"Segoe UI",Roboto,Arial,"Noto Kufi Arabic","Noto Sans Arabic",sans-serif;color:var(--text);background:var(--bg)}
+    header{position:sticky;top:0;z-index:10;background:linear-gradient(180deg,rgba(255,255,255,.85),rgba(255,255,255,.65));backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+    .container{max-width:1100px;margin:0 auto;padding:16px}
+    .brand{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .brand-left{display:flex;align-items:center;gap:12px}
+    .logo{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,#5b6cff,#19c6d1);display:grid;place-items:center;font-weight:800;color:#fff;box-shadow:var(--shadow)}
+    h1{margin:0;font-size:clamp(18px,3.2vw,26px)}
+    .userbox{display:flex;align-items:center;gap:10px}
+    .userbox .email{font-size:13px;color:var(--muted);background:#fff;border:1px solid var(--line);padding:6px 10px;border-radius:999px}
+    .logout{border:0;padding:10px 12px;border-radius:12px;cursor:pointer;font-weight:600;background:#fff;border:1px solid var(--line)}
+    .tabs{display:flex;gap:10px;flex-wrap:wrap;margin:10px auto 0}
+    .tab{border:1px solid var(--line);background:#fff;padding:10px 14px;border-radius:12px;cursor:pointer;font-weight:700}
+    .tab.active{color:#fff;border-color:transparent}
+    .tab[data-tab="todo"].active{background:linear-gradient(135deg,#4f46e5,#22d3ee)}
+    .tab[data-tab="prices"].active{background:linear-gradient(135deg,#059669,#34d399)}
+    .tab[data-tab="orders"].active{background:linear-gradient(135deg,#7c3aed,#f59e0b)}
+    .card{margin:16px 0;padding:18px;background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow)}
+    .row{display:flex;gap:8px;flex-wrap:wrap}
+    .input{flex:1;min-width:180px;background:#fff;border:1px solid var(--line);color:var(--text);padding:12px 14px;border-radius:12px;outline:none}
+    .btn{border:0;padding:12px 14px;border-radius:12px;cursor:pointer;font-weight:700}
+    .btn-primary{color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent2))}
+    .btn-ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
+    .btn-danger{background:linear-gradient(135deg,#f87171,#ef4444);color:#fff}
+    .section-title{display:flex;align-items:center;justify-content:space-between;margin:0 0 8px}
+    .section-title h3{margin:0;font-size:18px}
+    .muted{color:var(--muted);font-size:13px}
+    ul{list-style:none;padding:0;margin:12px 0 0}
+    li.item{display:flex;align-items:center;gap:12px;padding:14px;margin:10px 0;background:#fff;border:1px solid var(--line);border-radius:14px}
+    .checkbox{appearance:none;width:22px;height:22px;border-radius:6px;border:2px solid rgba(100,116,139,.6);display:grid;place-items:center}
+    .checkbox::after{content:"";width:12px;height:12px;border-radius:3px;transform:scale(0);background:linear-gradient(135deg,var(--accent),var(--accent2));transition:transform .18s}
+    .checkbox:checked{border-color:transparent;background:rgba(59,130,246,.15)}
+    .checkbox:checked::after{transform:scale(1)}
+    .text{flex:1;word-break:break-word}
+    time{font-size:12px;color:var(--muted)}
+    .actions{display:flex;gap:6px}
+    .grid{display:grid;grid-template-columns:1fr;gap:16px}
+    @media(min-width:860px){.grid{grid-template-columns:1fr 1fr}}
+    .divider{height:1px;background:var(--line);margin:6px 0 10px}
+    table{width:100%;border-collapse:separate;border-spacing:0 8px}
+    th,td{text-align:right;padding:12px;background:#fff;border:1px solid var(--line)}
+    th{background:#f9fbff}
+    tr td:first-child, tr th:first-child{border-top-right-radius:12px;border-bottom-right-radius:12px}
+    tr td:last-child, tr th:last-child{border-top-left-radius:12px;border-bottom-left-radius:12px}
+    .price{font-weight:700}
+    .hidden{display:none}
+    #authGate{position:fixed;inset:0;display:grid;place-items:center;background:linear-gradient(180deg,rgba(230,242,250,.85),rgba(230,242,250,.65));backdrop-filter:blur(8px)}
+    .auth-card{width:min(94%,420px);background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:18px}
+    .auth-card h2{margin:0 0 8px}
+    .auth-row{display:flex;flex-direction:column;gap:8px;margin:12px 0}
+    .err{color:#b91c1c;font-size:13px;min-height:18px}
   </style>
 </head>
 <body>
-  <!-- Auth overlay (Email/Password) -->
+  <!-- شاشة تسجيل الدخول -->
   <div id="authGate">
     <div class="auth-card">
       <h2>تسجيل دخول Lynka</h2>
@@ -97,13 +74,15 @@ tr td:last-child, tr th:last-child{border-top-left-radius:12px;border-bottom-lef
         <input id="authPass" class="input" type="password" placeholder="كلمة السر" autocomplete="current-password" />
         <button id="authBtn" class="btn btn-primary">دخول</button>
         <div id="authErr" class="err"></div>
-        <div class="muted">استخدم حساب: 1@lynka.com أو 2@lynka.com</div>
+        <div class="muted">استخدم: 1@lynka.com أو 2@lynka.com</div>
       </div>
     </div>
-  </div>  <header>
+  </div>
+
+  <header>
     <div class="container brand">
       <div class="brand-left">
-        <div class="logo" id="logoSlot"><span>L</span></div>
+        <div class="logo">L</div>
         <h1>Lynka — لوحة الإدارة</h1>
       </div>
       <div class="userbox">
@@ -116,9 +95,11 @@ tr td:last-child, tr th:last-child{border-top-left-radius:12px;border-bottom-lef
       <button class="tab" data-tab="prices">الأسعار</button>
       <button class="tab" data-tab="orders">الأوردرات</button>
     </div>
-  </header>  <main class="container" id="appRoot" style="display:none">
-    <!-- TAB: TODO (ألوان بنفسجي/سماوي) -->
-    <section id="tab-todo" class="card" style="--accent:#4f46e5; --accent2:#22d3ee;">
+  </header>
+
+  <main class="container" id="appRoot" style="display:none">
+    <!-- المهام -->
+    <section id="tab-todo" class="card" style="--accent:#4f46e5;--accent2:#22d3ee;">
       <div class="row" style="margin-bottom:12px">
         <input id="taskInput" class="input" placeholder="اكتب مهمة واضغط إضافة أو Enter" />
         <button id="addTaskBtn" class="btn btn-primary">إضافة</button>
@@ -135,53 +116,59 @@ tr td:last-child, tr th:last-child{border-top-left-radius:12px;border-bottom-lef
           <ul id="listDone"></ul>
         </div>
       </div>
-    </section><!-- TAB: PRICES (ألوان أخضر) -->
-<section id="tab-prices" class="card hidden" style="--accent:#059669; --accent2:#34d399;">
-  <div class="row" style="margin-bottom:12px">
-    <input id="productName" class="input" placeholder="اسم المنتج" />
-    <input id="productPrice" class="input" type="number" step="0.01" placeholder="السعر" />
-    <button id="addProductBtn" class="btn btn-primary">إضافة منتج</button>
-  </div>
-  <div class="divider"></div>
-  <table>
-    <thead>
-      <tr><th>المنتج</th><th>السعر</th><th>تاريخ</th><th>إجراء</th></tr>
-    </thead>
-    <tbody id="productsBody"></tbody>
-  </table>
-</section>
+    </section>
 
-<!-- TAB: ORDERS (ألوان بنفسجي/برتقالي) -->
-<section id="tab-orders" class="card hidden" style="--accent:#7c3aed; --accent2:#f59e0b;">
-  <div class="row" style="margin-bottom:12px">
-    <input id="orderTitle" class="input" placeholder="اسم/رقم الأوردر" />
-    <input id="orderTotal" class="input" type="number" step="0.01" placeholder="الإجمالي (اختياري)" />
-    <button id="addOrderBtn" class="btn btn-primary">إضافة أوردر</button>
-  </div>
-  <div class="divider"></div>
-  <table>
-    <thead>
-      <tr><th>الأوردر</th><th>الإجمالي</th><th>تاريخ</th><th>إجراء</th></tr>
-    </thead>
-    <tbody id="ordersBody"></tbody>
-  </table>
-</section>
+    <!-- الأسعار -->
+    <section id="tab-prices" class="card hidden" style="--accent:#059669;--accent2:#34d399;">
+      <div class="row" style="margin-bottom:12px">
+        <input id="productName" class="input" placeholder="اسم المنتج" />
+        <input id="productPrice" class="input" type="number" step="0.01" placeholder="السعر" />
+        <button id="addProductBtn" class="btn btn-primary">إضافة منتج</button>
+      </div>
+      <div class="divider"></div>
+      <table>
+        <thead><tr><th>المنتج</th><th>السعر</th><th>تاريخ</th><th>إجراء</th></tr></thead>
+        <tbody id="productsBody"></tbody>
+      </table>
+    </section>
 
-  </main>  <!-- Firebase compat SDKs -->  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>  <script>
+    <!-- الأوردرات -->
+    <section id="tab-orders" class="card hidden" style="--accent:#7c3aed;--accent2:#f59e0b;">
+      <div class="row" style="margin-bottom:12px">
+        <input id="orderTitle" class="input" placeholder="اسم/رقم الأوردر" />
+        <input id="orderTotal" class="input" type="number" step="0.01" placeholder="الإجمالي (اختياري)" />
+        <button id="addOrderBtn" class="btn btn-primary">إضافة أوردر</button>
+      </div>
+      <div class="divider"></div>
+      <table>
+        <thead><tr><th>الأوردر</th><th>الإجمالي</th><th>تاريخ</th><th>إجراء</th></tr></thead>
+        <tbody id="ordersBody"></tbody>
+      </table>
+    </section>
+  </main>
+
+  <!-- Firebase compat SDKs (طريقة واحدة فقط) -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+
+  <script>
+    // بيانات مشروعك (من Firebase → Settings → Your apps)
     const firebaseConfig = {
-      apiKey: "AIzaSyCnM6-7BoICLWAXUeH8qz8A_OCicGpQtMU",
+      apiKey: "AIzaSyCnM6-7BoICLWAXUeH8qz8A_OCiCGpQtMU",
       authDomain: "lynka-to-do-list-eb2ac.firebaseapp.com",
       projectId: "lynka-to-do-list-eb2ac",
-      storageBucket: "lynka-to-do-list-eb2ac.appspot.com",
+      storageBucket: "lynka-to-do-list-eb2ac.firebasestorage.app",
       messagingSenderId: "202285237255",
       appId: "1:202285237255:web:c12e66369d033e4ecd96a2"
     };
 
+    // تهيئة Firebase (compat)
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
-    const db = firebase.firestore();
+    const db   = firebase.firestore();
 
-    // ---------- Auth Gate ----------
+    // ======= Auth Gate =======
     const authGate = document.getElementById('authGate');
     const appRoot  = document.getElementById('appRoot');
     const emailEl  = document.getElementById('authEmail');
@@ -198,42 +185,47 @@ tr td:last-child, tr th:last-child{border-top-left-radius:12px;border-bottom-lef
         userEmailBadge.textContent = user.email;
         userEmailBadge.style.display = 'inline-block';
         logoutBtn.style.display = 'inline-block';
-      } else {
+      }else{
         appRoot.style.display='none';
         authGate.style.display='grid';
         userEmailBadge.style.display = 'none';
         logoutBtn.style.display = 'none';
       }
     });
-
     logoutBtn.addEventListener('click', ()=> auth.signOut());
 
     authBtn.addEventListener('click', async ()=>{
       authErr.textContent='';
       const email = (emailEl.value||'').trim();
       const pass  = passEl.value||'';
-      if(!email || !pass){ authErr.textContent = 'ادخل الإيميل وكلمة السر'; return; }
+      if(!email || !pass){ authErr.textContent='ادخل الإيميل وكلمة السر'; return; }
       try{ await auth.signInWithEmailAndPassword(email, pass); }
       catch(e){
-        if(e.code==='auth/user-not-found')      authErr.textContent = 'الحساب غير موجود. أضِفه من Firebase → Authentication.';
-        else if(e.code==='auth/wrong-password') authErr.textContent = 'كلمة السر غير صحيحة.';
-        else if(e.code==='auth/invalid-email')  authErr.textContent = 'صيغة الإيميل غير صحيحة.';
-        else                                     authErr.textContent = 'خطأ: '+ e.message;
+        if(e.code==='auth/user-not-found')      authErr.textContent='الحساب غير موجود (أضِفه من Authentication).';
+        else if(e.code==='auth/wrong-password') authErr.textContent='كلمة السر غير صحيحة.';
+        else if(e.code==='auth/invalid-email')  authErr.textContent='صيغة الإيميل غير صحيحة.';
+        else                                     authErr.textContent='Firebase: '+e.message;
       }
     });
 
-    // ---------------- Tabs ----------------
+    // ======= Tabs =======
     const tabsEl = document.getElementById('tabs');
-    const sections = { todo:document.getElementById('tab-todo'), prices:document.getElementById('tab-prices'), orders:document.getElementById('tab-orders') };
-    tabsEl.addEventListener('click', (e)=>{
+    const sections = {
+      todo:   document.getElementById('tab-todo'),
+      prices: document.getElementById('tab-prices'),
+      orders: document.getElementById('tab-orders')
+    };
+    tabsEl.addEventListener('click',(e)=>{
       const btn = e.target.closest('.tab'); if(!btn) return;
       tabsEl.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
       btn.classList.add('active');
       const key = btn.dataset.tab;
-      Object.entries(sections).forEach(([k,sec])=> sec.classList.toggle('hidden', k!==key));
+      Object.entries(sections).forEach(([k,sec])=>sec.classList.toggle('hidden',k!==key));
     });
+    // فعل أول تاب شكليًا
+    tabsEl.querySelector('.tab[data-tab="todo"]').classList.add('active');
 
-    // --------------- TODO LIST ---------------
+    // ======= TODO =======
     const tasksRef = db.collection('tasks');
     const taskInput = document.getElementById('taskInput');
     const addTaskBtn = document.getElementById('addTaskBtn');
@@ -246,7 +238,11 @@ tr td:last-child, tr th:last-child{border-top-left-radius:12px;border-bottom-lef
     async function addTask(){
       const text = (taskInput.value||'').trim();
       if(!text) return;
-      await tasksRef.add({ text, done:false, createdAt: firebase.firestore.FieldValue.serverTimestamp(), uid: auth.currentUser?.uid || null });
+      await tasksRef.add({
+        text, done:false,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        uid: auth.currentUser?.uid || null
+      });
       taskInput.value=''; taskInput.focus();
     }
     addTaskBtn.addEventListener('click', addTask);
@@ -261,7 +257,7 @@ tr td:last-child, tr th:last-child{border-top-left-radius:12px;border-bottom-lef
 
     function taskItem(doc){
       const d = doc.data();
-      const li = document.createElement('li'); li.className='item'+(d.done?' done':'');
+      const li = document.createElement('li'); li.className='item';
       const cb = document.createElement('input'); cb.type='checkbox'; cb.className='checkbox'; cb.checked=!!d.done;
       cb.addEventListener('change', ()=> doc.ref.update({done: cb.checked}));
       const text = document.createElement('div'); text.className='text'; text.textContent=d.text;
@@ -272,7 +268,6 @@ tr td:last-child, tr th:last-child{border-top-left-radius:12px;border-bottom-lef
       li.append(cb,text,time,actions);
       return li;
     }
-
     tasksRef.orderBy('createdAt','desc').onSnapshot(snap=>{
       listActive.innerHTML=''; listDone.innerHTML=''; let a=0,dn=0;
       snap.docs.forEach(doc=>{
@@ -283,7 +278,7 @@ tr td:last-child, tr th:last-child{border-top-left-radius:12px;border-bottom-lef
       countDone.textContent = dn + ' مُنجزة';
     });
 
-    // --------------- PRICES ---------------
+    // ======= PRICES =======
     const productsRef = db.collection('products');
     const productName = document.getElementById('productName');
     const productPrice = document.getElementById('productPrice');
@@ -294,7 +289,11 @@ tr td:last-child, tr th:last-child{border-top-left-radius:12px;border-bottom-lef
       const name = (productName.value||'').trim();
       const price = parseFloat(productPrice.value);
       if(!name || isNaN(price)) return;
-      await productsRef.add({ name, price, createdAt: firebase.firestore.FieldValue.serverTimestamp(), uid: auth.currentUser?.uid || null });
+      await productsRef.add({
+        name, price,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        uid: auth.currentUser?.uid || null
+      });
       productName.value=''; productPrice.value='';
     }
     addProductBtn.addEventListener('click', addProduct);
@@ -313,13 +312,12 @@ tr td:last-child, tr th:last-child{border-top-left-radius:12px;border-bottom-lef
       tr.append(tdName, tdPrice, tdDate, tdAct);
       return tr;
     }
-
     productsRef.orderBy('createdAt','desc').onSnapshot(snap=>{
       productsBody.innerHTML='';
       snap.docs.forEach(doc=> productsBody.appendChild(productRow(doc)) );
     });
 
-    // --------------- ORDERS ---------------
+    // ======= ORDERS =======
     const ordersRef = db.collection('orders');
     const orderTitle = document.getElementById('orderTitle');
     const orderTotal = document.getElementById('orderTotal');
@@ -330,7 +328,11 @@ tr td:last-child, tr th:last-child{border-top-left-radius:12px;border-bottom-lef
       const title = (orderTitle.value||'').trim();
       const total = orderTotal.value ? parseFloat(orderTotal.value) : null;
       if(!title) return;
-      await ordersRef.add({ title, total, createdAt: firebase.firestore.FieldValue.serverTimestamp(), uid: auth.currentUser?.uid || null });
+      await ordersRef.add({
+        title, total,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        uid: auth.currentUser?.uid || null
+      });
       orderTitle.value=''; orderTotal.value='';
     }
     addOrderBtn.addEventListener('click', addOrder);
@@ -349,18 +351,10 @@ tr td:last-child, tr th:last-child{border-top-left-radius:12px;border-bottom-lef
       tr.append(tdTitle, tdTotal, tdDate, tdAct);
       return tr;
     }
-
     ordersRef.orderBy('createdAt','desc').onSnapshot(snap=>{
       ordersBody.innerHTML='';
       snap.docs.forEach(doc=> ordersBody.appendChild(orderRow(doc)) );
     });
-
-    // لوجو (اختياري)
-    (function(){
-      const slot = document.getElementById('logoSlot');
-      const img = new Image();
-      img.onload = ()=>{ slot.innerHTML=''; slot.appendChild(img); };
-      img.src = 'logo.png'; img.alt = 'logo';
-    })();
-  </script></body>
+  </script>
+</body>
 </html>
