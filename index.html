@@ -7,50 +7,56 @@
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
   <style>
     :root{
-      --bg:#f7f9fc; --ink:#0b1220; --muted:#6b7280;
+      --bg:#f7f9fc; --ink:#0b1220; --muted:#667085;
       --brand:#2563eb; --ok:#10b981; --danger:#ef4444;
-      --surface:#ffffff; --line:#e5e7eb;
-      --tabbar:#111827; --tab-bg:#0f172a; --tab-active:#ffffff;
-      --soft:#eef4ff; --soft-green:#ecfff2; --soft-blue:#f3f7ff;
+      --surface:#ffffff; --line:#e6e8ee;
+      --tabbar:#0f172a; --tab-bg:#111827; --tab-active:#ffffff;
+      --soft:#f2f6ff; --soft-green:#ecfff2; --soft-blue:#eef6ff;
+      --soft-yellow:#fff7ed; --soft-purple:#f4f0ff; --soft-cyan:#edfaff; --soft-rose:#fff0f3;
     }
     *{box-sizing:border-box}
     html,body{
       margin:0;background:var(--bg);color:var(--ink);
       font-family:"Cairo",system-ui,-apple-system,Segoe UI,Roboto;
-      font-size:15px;line-height:1.7;
+      font-size:15px;line-height:1.75;
     }
-    .wrap{max-width:1100px;margin:auto;padding:12px}
-    .topbar{
-      display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;
-      margin:6px 0 12px;
-    }
+    .wrap{max-width:1100px;margin:auto;padding:14px}
+    .topbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin:6px 0 14px}
     .title{font-weight:800;font-size:20px}
     .user-pill{padding:8px 12px;border-radius:999px;background:linear-gradient(135deg,#4f46e5,#06b6d4);color:#fff;font-weight:700;cursor:pointer}
 
-    /* Tabs (ستايل شبيه كروم: شريط غامق، التاب المختار أبيض وباقيها غامق) */
-    .tabs-bar{
-      background:var(--tabbar); border-radius:14px; padding:6px; display:flex; gap:6px; overflow-x:auto;
-      box-shadow:0 6px 18px rgba(0,0,0,.15);
+    /* Tabs (شريط غامق، التاب المختار أبيض، باقي التابات غامقة) */
+    .tabs{
+      background:var(--tabbar);border-radius:14px;padding:6px;display:flex;gap:6px;overflow-x:auto;
+      box-shadow:0 8px 20px rgba(0,0,0,.18)
     }
     .tab{
-      appearance:none;border:0;cursor:pointer;font-weight:700;
+      appearance:none;border:0;cursor:pointer;font-weight:800;
       color:#e5e7eb;background:var(--tab-bg);
       padding:10px 14px;border-radius:12px;flex:0 0 auto;
       transition:transform .15s ease, background .2s ease, color .2s ease;
+      white-space:nowrap
     }
     .tab:hover{transform:translateY(-1px)}
     .tab.active{background:var(--tab-active);color:var(--ink);box-shadow:inset 0 0 0 2px #eef2ff}
 
-    section{
-      background:var(--surface);border:1px solid var(--line);border-radius:14px;
-      padding:14px;margin-top:12px;box-shadow:0 1px 3px rgba(0,0,0,.06)
-    }
+    /* Panels ألوان خلفية خفيفة لكل تبويب */
+    [data-panel]{padding:10px;border-radius:12px;margin-top:12px}
+    [data-panel] section{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+    [data-panel="auth"]{background:var(--soft)}
+    [data-panel="tasks"]{background:var(--soft-blue)}
+    [data-panel="products"]{background:var(--soft-cyan)}
+    [data-panel="calc"]{background:var(--soft-green)}
+    [data-panel="orders"]{background:var(--soft-yellow)}
+    [data-panel="finance"]{background:var(--soft-purple)}
+    [data-panel="clients"]{background:var(--soft)}
+    [data-panel="inventory"]{background:var(--soft-rose)}
     .hide{display:none !important}
 
     .grid{display:grid;gap:12px}
     .two{grid-template-columns:1fr 1fr}
     .three{grid-template-columns:1fr 1fr 1fr}
-    @media(max-width:768px){ .two,.three{grid-template-columns:1fr} .title{font-size:18px} }
+    @media (max-width:768px){ .two,.three{grid-template-columns:1fr} .title{font-size:18px} }
 
     input,select,textarea{
       width:100%;padding:10px;border:1px solid var(--line);border-radius:10px;background:#fff;font-size:14px
@@ -63,17 +69,14 @@
     .ok{background:var(--ok);color:#fff}
     .red{background:var(--danger);color:#fff}
     .ghost{background:#eef2ff;color:#1e293b}
-
     .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-start}
-
-    /* بطاقات/قوائم */
-    .card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px}
-    .list > .item{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:10px}
-    .item--done{background:var(--soft-green)}
     .muted{color:var(--muted)}
+    .stat{font-weight:800}
 
-    /* منتجات */
-    .prod-card{border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:10px;background:#fff}
+    /* عناصر القوائم */
+    .list .item{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px;margin-bottom:10px}
+    .item--done{background:var(--soft-green)}
+    .prod-card{border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff;display:flex;flex-direction:column;gap:10px}
     .prod-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
     .dist-row{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:center}
 
@@ -83,19 +86,9 @@
     thead{background:#f8fafc}
     th,td{padding:10px;border-bottom:1px solid var(--line);text-align:center;font-size:14px;white-space:nowrap}
 
-    /* تبويب لون خفيف */
-    [data-panel="tasks"]{background:#eaf2ff}
-    [data-panel="products"]{background:#edf7ff}
-    [data-panel="calc"]{background:#eefcf6}
-    [data-panel="orders"]{background:#fff7ed}
-    [data-panel="finance"]{background:#f7f0ff}
-    [data-panel="clients"]{background:#f0fbff}
-    [data-panel="inventory"]{background:#fff0f0}
-    [data-panel] section{background:#fff}
-
-    /* Toast ترحيب */
+    /* Toast ترحيب ثانية واحدة */
     .toast{
-      position:fixed; inset-inline:0; top:14px; margin:auto; max-width:90%;
+      position:fixed; inset-inline:0; top:14px; margin:auto; max-width:92%;
       background:#111827; color:#fff; padding:10px 12px; border-radius:12px;
       transform:translateY(-30px); opacity:0; pointer-events:none;
       transition:all .28s ease; z-index:9999; font-size:14px
@@ -105,13 +98,16 @@
 </head>
 <body>
 <div class="wrap">
+  <!-- Header -->
   <div class="topbar">
     <div class="title">لوحة الإدارة — <b>Lynka</b></div>
-    <div class="user-pill" id="userPill" title="تسجيل الخروج / الدخول"><span id="userEmail">غير مسجل</span></div>
+    <div class="user-pill" id="userPill" title="تسجيل الخروج / الدخول">
+      <span id="userEmail">غير مسجل</span>
+    </div>
   </div>
 
   <!-- Tabs -->
-  <div class="tabs-bar" id="tabs">
+  <div class="tabs" id="tabs">
     <button class="tab" data-s="tasks">📝 المهام</button>
     <button class="tab" data-s="products">🏷️ المنتجات</button>
     <button class="tab" data-s="calc">📊 الحساب</button>
@@ -122,10 +118,10 @@
     <button class="tab active" data-s="auth">🔐 الدخول</button>
   </div>
 
-  <!-- Panels (كل Panel له خلفية خفيفة) -->
+  <!-- Panels (كل Panel بخلفية خفيفة خاصة) -->
   <div data-panel="auth">
     <section id="s-auth">
-      <div class="card grid">
+      <div class="grid">
         <h3 style="margin:0 0 6px">تسجيل دخول Lynka</h3>
         <div class="grid two">
           <div>
@@ -148,7 +144,7 @@
   <div data-panel="tasks" class="hide">
     <section>
       <div class="grid two">
-        <div class="card">
+        <div>
           <h3 style="margin:0 0 6px">أضف مهمة</h3>
           <div class="grid">
             <textarea id="taskText" placeholder="اكتب مهمة (يسمح بنص طويل)…"></textarea>
@@ -156,18 +152,18 @@
             <button class="btn brand" id="addTask">إضافة</button>
           </div>
         </div>
-        <div class="card">
+        <div>
           <div class="row" style="justify-content:space-between">
             <h3 style="margin:0">المهام المُنجزة</h3>
-            <div class="muted">عدد: <span id="doneCount">0</span></div>
+            <div class="muted">عدد: <span id="doneCount" class="stat">0</span></div>
           </div>
           <div class="list" id="doneList"></div>
         </div>
       </div>
-      <div class="card" style="margin-top:8px">
+      <div style="margin-top:8px">
         <div class="row" style="justify-content:space-between">
           <h3 style="margin:0">المهام النشطة</h3>
-          <div class="muted">عدد: <span id="activeCount">0</span></div>
+          <div class="muted">عدد: <span id="activeCount" class="stat">0</span></div>
         </div>
         <div class="list" id="tasksList"></div>
       </div>
@@ -176,75 +172,61 @@
 
   <div data-panel="products" class="hide">
     <section>
-      <div class="card">
-        <h3 style="margin:0">إضافة منتج</h3>
-        <div class="grid three">
-          <input id="pName" placeholder="اسم المنتج">
-          <input id="pFactory" type="number" step="0.01" placeholder="سعر المصنع">
-          <input id="pQty" type="number" step="1" placeholder="الكمية">
-        </div>
-        <div class="grid two" style="margin-top:8px">
-          <input id="pDistName" placeholder="اسم موزّع (اختياري)">
-          <input id="pDistPrice" type="number" step="0.01" placeholder="سعر الموزّع (اختياري)">
-        </div>
-        <button class="btn brand" style="margin-top:8px" id="addProduct">إضافة المنتج</button>
+      <h3 style="margin:0 0 6px">إضافة منتج</h3>
+      <div class="grid three">
+        <input id="pName" placeholder="اسم المنتج">
+        <input id="pFactory" type="number" step="0.01" placeholder="سعر المصنع">
+        <input id="pQty" type="number" step="1" placeholder="الكمية">
       </div>
-      <div id="productsList" class="grid" style="margin-top:8px"></div>
+      <div class="grid two" style="margin-top:8px">
+        <input id="pDistName" placeholder="اسم موزّع (اختياري)">
+        <input id="pDistPrice" type="number" step="0.01" placeholder="سعر الموزّع (اختياري)">
+      </div>
+      <button class="btn brand" style="margin-top:8px" id="addProduct">إضافة المنتج</button>
+      <div id="productsList" class="grid" style="margin-top:12px"></div>
     </section>
   </div>
 
   <div data-panel="calc" class="hide">
     <section>
-      <div class="card">
-        <div class="row" style="justify-content:space-between">
-          <h3 style="margin:0">الحساب حسب الموزّع</h3>
-          <div class="row">
-            <label class="muted">اختر الموزّع:</label>
-            <select id="distSelect"></select>
-          </div>
-        </div>
-        <div class="table-wrap">
-          <table>
-            <thead><tr>
-              <th>المنتج</th><th>سعر المصنع</th><th>الكمية</th>
-              <th>سعر الموزّع</th><th>إجمالي المصنع</th><th>إجمالي الموزّع</th>
-            </tr></thead>
-            <tbody id="calcTable"></tbody>
-          </table>
-        </div>
-        <div class="row" style="justify-content:center;margin-top:12px;gap:20px;font-weight:800">
-          <div>إجمالي المصنع: <span id="totFactory">0</span></div>
-          <div>إجمالي الموزّع: <span id="totDist">0</span></div>
-          <div>الفرق (الربح): <span id="totDiff">0</span></div>
-        </div>
+      <div class="row" style="justify-content:space-between">
+        <h3 style="margin:0">الحساب حسب الموزّع</h3>
+        <div class="row"><label class="muted">اختر الموزّع:</label><select id="distSelect"></select></div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>المنتج</th><th>سعر المصنع</th><th>الكمية</th>
+            <th>سعر الموزّع</th><th>إجمالي المصنع</th><th>إجمالي الموزّع</th>
+          </tr></thead>
+          <tbody id="calcTable"></tbody>
+        </table>
+      </div>
+      <div class="row" style="justify-content:center;margin-top:12px;gap:20px;font-weight:800">
+        <div>إجمالي المصنع: <span id="totFactory">0</span></div>
+        <div>إجمالي الموزّع: <span id="totDist">0</span></div>
+        <div>الفرق (الربح): <span id="totDiff">0</span></div>
       </div>
     </section>
   </div>
 
   <div data-panel="orders" class="hide">
     <section>
-      <div class="card">
-        <h3 style="margin:0">إضافة أوردر</h3>
-        <div class="grid two">
-          <input id="oClient" placeholder="اسم العميل">
-          <input id="oAmount" type="number" step="0.01" placeholder="القيمة">
-        </div>
-        <button class="btn brand" style="margin-top:8px" id="addOrder">إضافة</button>
+      <h3 style="margin:0">إضافة أوردر</h3>
+      <div class="grid two">
+        <input id="oClient" placeholder="اسم العميل">
+        <input id="oAmount" type="number" step="0.01" placeholder="القيمة">
       </div>
-      <div class="card">
-        <div class="row" style="justify-content:space-between">
-          <h3 style="margin:0">الأوردرات</h3>
-          <div><b>الإجمالي: </b><span id="sumOrders">0</span></div>
-        </div>
-        <div id="ordersList" class="list" style="margin-top:8px"></div>
-      </div>
+      <button class="btn brand" style="margin-top:8px" id="addOrder">إضافة</button>
+      <div class="list" id="ordersList" style="margin-top:12px"></div>
+      <div class="card" style="margin-top:8px"><b>إجمالي الأوردرات: </b><span id="sumOrders">0</span></div>
     </section>
   </div>
 
   <div data-panel="finance" class="hide">
     <section>
       <div class="grid two">
-        <div class="card">
+        <div>
           <h3 style="margin:0">المصروفات</h3>
           <div class="grid two">
             <input id="exDesc" placeholder="وصف (اختياري)">
@@ -254,7 +236,7 @@
           <div id="expList" class="list" style="margin-top:8px"></div>
           <div class="card" style="margin-top:8px"><b>إجمالي المصروفات: </b><span id="sumExp">0</span></div>
         </div>
-        <div class="card">
+        <div>
           <h3 style="margin:0">الأرباح</h3>
           <div class="grid two">
             <input id="prDesc" placeholder="وصف (اختياري)">
@@ -270,36 +252,26 @@
 
   <div data-panel="clients" class="hide">
     <section>
-      <div class="card">
-        <h3 style="margin:0">إضافة عميل</h3>
-        <div class="grid two">
-          <input id="cName" placeholder="اسم العميل">
-          <input id="cPhone" placeholder="هاتف (اختياري)">
-        </div>
-        <button class="btn brand" style="margin-top:8px" id="addClient">إضافة</button>
+      <h3 style="margin:0">إضافة عميل</h3>
+      <div class="grid two">
+        <input id="cName" placeholder="اسم العميل">
+        <input id="cPhone" placeholder="هاتف (اختياري)">
       </div>
-      <div class="card">
-        <h3 style="margin:0">قائمة العملاء</h3>
-        <div id="clientsList" class="list" style="margin-top:8px"></div>
-      </div>
+      <button class="btn brand" style="margin-top:8px" id="addClient">إضافة</button>
+      <div id="clientsList" class="list" style="margin-top:12px"></div>
     </section>
   </div>
 
   <div data-panel="inventory" class="hide">
     <section>
-      <div class="card">
-        <h3 style="margin:0">إضافة صنف مخزون</h3>
-        <div class="grid three">
-          <input id="iName" placeholder="اسم المنتج">
-          <input id="iQty" type="number" step="1" placeholder="الكمية">
-          <input id="iMin" type="number" step="1" placeholder="حد التنبيه (اختياري)">
-        </div>
-        <button class="btn brand" style="margin-top:8px" id="addInv">إضافة</button>
+      <h3 style="margin:0">إضافة صنف مخزون</h3>
+      <div class="grid three">
+        <input id="iName" placeholder="اسم المنتج">
+        <input id="iQty" type="number" step="1" placeholder="الكمية">
+        <input id="iMin" type="number" step="1" placeholder="حد التنبيه (اختياري)">
       </div>
-      <div class="card">
-        <h3 style="margin:0">المخزون</h3>
-        <div id="invList" class="list" style="margin-top:8px"></div>
-      </div>
+      <button class="btn brand" style="margin-top:8px" id="addInv">إضافة</button>
+      <div id="invList" class="list" style="margin-top:12px"></div>
     </section>
   </div>
 </div>
@@ -315,6 +287,7 @@
     getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, deleteDoc, updateDoc, serverTimestamp
   } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
 
+  /* إعدادات Firebase (نفس مشروعك) */
   const firebaseConfig = {
     apiKey: "AIzaSyCnM6-7BoICLWAXUeH8qz8A_OCiCGpQtMU",
     authDomain: "lynka-to-do-list-eb2ac.firebaseapp.com",
@@ -342,7 +315,7 @@
     sessionStorage.setItem('lynka_tab', key);
   }
   tabs.forEach(t=>t.addEventListener('click',()=>showTab(t.dataset.s)));
-  showTab('auth');
+  showTab('auth'); /* ابدأ بالدخول */
 
   /* Toast once after first login */
   const toast=$('#welcomeToast');
@@ -369,7 +342,7 @@
     else showTab('auth');
   });
 
-  /* Collections */
+  /* Firestore Collections */
   const colTasks   = collection(db,'lynka_tasks');
   const colProds   = collection(db,'lynka_products');
   const colOrders  = collection(db,'lynka_orders');
@@ -378,7 +351,7 @@
   const colClients = collection(db,'lynka_clients');
   const colInv     = collection(db,'lynka_inventory');
 
-  /* State for unsubscribers */
+  /* Unsub management */
   let unsubs=[];
   function detachAll(){
     unsubs.forEach(u=>{try{u()}catch{}});
@@ -390,14 +363,13 @@
       .forEach(s=>{const el=$(s); if(el) el.textContent='0';});
     $('#distSelect').innerHTML='';
   }
-
-  /* Require auth guard for write ops */
   function requireAuth(){ if(!auth.currentUser){ showTab('auth'); throw new Error('not-auth'); } }
 
-  /* ===== Init modules AFTER login ===== */
+  /* ========= Modules (تتفعل بعد تسجيل الدخول فقط) ========= */
   let allProducts=[];
+
   function initTasks(){
-    $('#addTask').onclick = async ()=>{
+    $('#addTask').onclick=async ()=>{
       try{
         requireAuth();
         const text=$('#taskText').value.trim();
@@ -408,24 +380,22 @@
       }catch{}
     };
     function taskItem(id,d){
-      const it=document.createElement('div');
-      it.className='item'+(d.done?' item--done':'');
-      it.innerHTML=`
-        <div class="row" style="justify-content:space-between;align-items:flex-start">
-          <div style="flex:1">
-            <div style="font-weight:700">${esc(d.text)}</div>
-            <div class="muted" style="margin-top:4px">${d.tag?('#'+esc(d.tag)):'—'}</div>
-          </div>
-          <div class="row">
-            <label class="row"><input type="checkbox" ${d.done?'checked':''} style="transform:scale(1.2)"><span>منجز</span></label>
-            <button class="btn red">حذف</button>
-          </div>
-        </div>`;
+      const it=document.createElement('div'); it.className='item'+(d.done?' item--done':'');
+      it.innerHTML=`<div class="row" style="justify-content:space-between;align-items:flex-start">
+        <div style="flex:1">
+          <div style="font-weight:800">${esc(d.text)}</div>
+          <div class="muted" style="margin-top:4px">${d.tag?('#'+esc(d.tag)):'—'}</div>
+        </div>
+        <div class="row">
+          <label class="row"><input type="checkbox" ${d.done?'checked':''} style="transform:scale(1.2)"><span>منجز</span></label>
+          <button class="btn red">حذف</button>
+        </div>
+      </div>`;
       it.querySelector('input').addEventListener('change',()=>{ requireAuth(); updateDoc(doc(db,'lynka_tasks',id),{done:!d.done}); });
       it.querySelector('.btn.red').addEventListener('click',()=>{ requireAuth(); deleteDoc(doc(db,'lynka_tasks',id)); });
       return it;
     }
-    const unsub = onSnapshot(query(colTasks,orderBy('createdAt','desc')),(snap)=>{
+    const unsub=onSnapshot(query(colTasks,orderBy('createdAt','desc')),(snap)=>{
       const active=$('#tasksList'), done=$('#doneList'); active.innerHTML=''; done.innerHTML='';
       let a=0,dn=0;
       snap.forEach(s=>{
@@ -438,7 +408,7 @@
   }
 
   function initProducts(){
-    $('#addProduct').onclick = async ()=>{
+    $('#addProduct').onclick=async ()=>{
       try{
         requireAuth();
         const name=$('#pName').value.trim();
@@ -447,8 +417,7 @@
         const dname=$('#pDistName').value.trim();
         const dprice=parseFloat(($('#pDistPrice').value||'').toString().replace(',','.'));
         if(!name || isNaN(factory) || !qty) return;
-        const distributors={};
-        if(dname && !isNaN(dprice)) distributors[dname]=dprice;
+        const distributors={}; if(dname && !isNaN(dprice)) distributors[dname]=dprice;
         await addDoc(colProds,{name,factory,qty,distributors,createdAt:serverTimestamp()});
         ['#pName','#pFactory','#pQty','#pDistName','#pDistPrice'].forEach(s=>$(s).value='');
       }catch{}
@@ -467,25 +436,15 @@
           <div><label class="muted">سعر المصنع</label><input type="number" step="0.01" value="${d.factory??0}" data-f="factory"></div>
           <div><label class="muted">الكمية</label><input type="number" step="1" value="${d.qty??0}" data-f="qty"></div>
           <div><label class="muted">إضافة موزّع</label>
-            <div class="row">
-              <input placeholder="اسم" data-add-name>
-              <input type="number" step="0.01" placeholder="السعر" data-add-price>
-              <button class="btn brand" data-act="addDist">إضافة</button>
-            </div>
+            <div class="row"><input placeholder="اسم" data-add-name><input type="number" step="0.01" placeholder="السعر" data-add-price><button class="btn brand" data-act="addDist">إضافة</button></div>
           </div>
         </div>
-        <div><label class="muted">الموزّعين</label><div class="list" data-dists></div></div>
-      `;
+        <div><label class="muted">الموزّعين</label><div class="list" data-dists></div></div>`;
       const dwrap=card.querySelector('[data-dists]'); dwrap.innerHTML='';
       Object.entries(d.distributors||{}).forEach(([name,price])=>{
         const row=document.createElement('div'); row.className='dist-row';
-        row.innerHTML=`
-          <input value="${esc(name)}" data-dn>
-          <input type="number" step="0.01" value="${price}" data-dp>
-          <div class="row">
-            <button class="btn ghost" data-act="upd">تحديث</button>
-            <button class="btn red" data-act="del">حذف</button>
-          </div>`;
+        row.innerHTML=`<input value="${esc(name)}" data-dn><input type="number" step="0.01" value="${price}" data-dp>
+          <div class="row"><button class="btn ghost" data-act="upd">تحديث</button><button class="btn red" data-act="del">حذف</button></div>`;
         row.querySelector('[data-act="upd"]').onclick=async ()=>{
           try{
             requireAuth();
@@ -580,8 +539,8 @@
         const d=s.data(); sum+=Number(d.amount)||0;
         const it=document.createElement('div'); it.className='item';
         it.innerHTML=`<div class="row" style="justify-content:space-between">
-          <div style="font-weight:700">${esc(d.client)}</div>
-          <div class="row"><div style="font-weight:800">${en(d.amount)}</div>
+          <div style="font-weight:800">${esc(d.client)}</div>
+          <div class="row"><div class="stat">${en(d.amount)}</div>
           <button class="btn red">حذف</button></div></div>`;
         it.querySelector('.btn.red').onclick=()=>{ requireAuth(); deleteDoc(doc(db,'lynka_orders',s.id)); };
         L.appendChild(it);
@@ -619,7 +578,7 @@
         const it=document.createElement('div'); it.className='item';
         it.innerHTML=`<div class="row" style="justify-content:space-between">
           <div>${d.desc?esc(d.desc):'<span class="muted">بدون وصف</span>'}</div>
-          <div class="row"><div style="font-weight:800">${en(d.amount)}</div>
+          <div class="row"><div class="stat">${en(d.amount)}</div>
           <button class="btn red">حذف</button></div></div>`;
         it.querySelector('.btn.red').onclick=()=>{ requireAuth(); deleteDoc(doc(db,'lynka_expenses',s.id)); };
         L.appendChild(it);
@@ -633,7 +592,7 @@
         const it=document.createElement('div'); it.className='item';
         it.innerHTML=`<div class="row" style="justify-content:space-between">
           <div>${d.desc?esc(d.desc):'<span class="muted">بدون وصف</span>'}</div>
-          <div class="row"><div style="font-weight:800">${en(d.amount)}</div>
+          <div class="row"><div class="stat">${en(d.amount)}</div>
           <button class="btn red">حذف</button></div></div>`;
         it.querySelector('.btn.red').onclick=()=>{ requireAuth(); deleteDoc(doc(db,'lynka_profits',s.id)); };
         L.appendChild(it);
@@ -660,7 +619,7 @@
         const d=s.data();
         const it=document.createElement('div'); it.className='item';
         it.innerHTML=`<div class="row" style="justify-content:space-between">
-          <div style="font-weight:700">${esc(d.name)}</div>
+          <div style="font-weight:800">${esc(d.name)}</div>
           <div class="row"><div class="muted">${d.phone?esc(d.phone):'—'}</div>
           <button class="btn red">حذف</button></div></div>`;
         it.querySelector('.btn.red').onclick=()=>{ requireAuth(); deleteDoc(doc(db,'lynka_clients',s.id)); };
@@ -688,9 +647,9 @@
         const d=s.data(); const low=(Number(d.qty)||0) <= (Number(d.min)||0);
         const it=document.createElement('div'); it.className='item';
         it.innerHTML=`<div class="row" style="justify-content:space-between">
-          <div style="font-weight:700">${esc(d.name)} ${low?'<span class="muted" style="color:#b91c1c">• منخفض</span>':''}</div>
+          <div style="font-weight:800">${esc(d.name)} ${low?'<span class="muted" style="color:#b91c1c">• منخفض</span>':''}</div>
           <div class="row">
-            <div style="font-weight:800">${en(d.qty)}</div>
+            <div class="stat">${en(d.qty)}</div>
             <button class="btn ghost" data-a="inc">+1</button>
             <button class="btn ghost" data-a="dec">-1</button>
             <button class="btn red">حذف</button>
@@ -704,15 +663,15 @@
     unsubs.push(unsub);
   }
 
-  /* Auth state */
+  /* Auth state: اربط/افصل حسب الدخول */
   onAuthStateChanged(auth, u=>{
     if(u){
       userEmail.textContent=u.email||'مستخدم';
       welcomeOnce();
       showTab(sessionStorage.getItem('lynka_tab')||'tasks');
 
-      // Attach all listeners AFTER login
       detachAll();
+      /* attach all listeners AFTER login */
       initTasks(); initProducts(); initOrders(); initFinance(); initClients(); initInventory();
     }else{
       userEmail.textContent='غير مسجل';
