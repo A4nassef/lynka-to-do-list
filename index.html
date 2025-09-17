@@ -1,638 +1,729 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Lynka — لوحة الإدارة</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
   <style>
     :root{
-      --text:#0f172a; --muted:#64748b; --line:#e5e7eb; --card:#ffffff;
-      --shadow:0 12px 40px rgba(2,6,23,.06); --radius:18px;
-
-      /* خلفيات فاتحة جدًا لكل تبويب */
-      --sec-tasks:#EAF4FF;     /* أزرق فاتح */
-      --sec-prices:#F2E8FF;    /* بنفسجي فاتح */
-      --sec-orders:#FFF4E5;    /* برتقالي فاتح */
-      --sec-finance:#E9FFF1;   /* أخضر فاتح */
-      --sec-clients:#FFEFF5;   /* وردي فاتح */
-      --sec-inventory:#F0F4F8; /* رمادي أزرق فاتح */
-
-      /* ألوان التابات */
-      --tab-tasks:#4F7DF7;
-      --tab-prices:#10B981;
-      --tab-orders:#7C3AED;
-      --tab-finance:#0EA5E9;
-      --tab-clients:#F97316;
-      --tab-inventory:#14B8A6;
-
-      /* حالات المهام */
-      --task-active-bg:#F2F8FF; /* غير منجزة */
-      --task-done-bg:#ECFDF5;   /* منجزة */
+      --bg:#f5f8ff; --ink:#0b1220; --muted:#6b7280;
+      --tabbar:#171a1f; --brand:#2563eb; --ok:#10b981; --danger:#ef4444;
+      --card:#ffffff; --line:#e5e7eb;
+      --soft-blue:#f0f6ff; --soft-green:#ecfff2;
     }
-
     *{box-sizing:border-box}
-    html,body{margin:0;background:#F6F8FC;color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Tahoma,Arial}
-    .wrap{max-width:1040px;margin:0 auto;padding:0 16px}
+    html,body{margin:0;background:var(--bg);color:var(--ink);
+      font-family:"Cairo",system-ui,-apple-system,Segoe UI,Roboto;
+      font-size:15px;line-height:1.6;}
+    .wrap{max-width:1140px;margin:auto;padding:12px}
 
-    /* Topbar */
-    .topbar{position:sticky;top:0;z-index:50;background:linear-gradient(180deg,#fff,rgba(255,255,255,.85));backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
-    .topbar .row{display:flex;align-items:center;gap:12px;padding:12px 0}
-    .brand{display:flex;align-items:center;gap:10px}
-    .logo{width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#5b6cff,#19c6d1);display:grid;place-items:center;color:#fff;font-weight:900;box-shadow:var(--shadow)}
-    .brand h1{margin:0;font-size:20px}
+    .topbar{display:flex;justify-content:space-between;align-items:center;
+      margin-bottom:12px;gap:10px;flex-wrap:wrap}
+    .title{font-weight:800;font-size:20px}
+    .user-pill{padding:8px 14px;border-radius:12px;
+      background:linear-gradient(135deg,#4f46e5,#06b6d4);
+      color:#fff;font-weight:700;cursor:pointer;font-size:14px}
 
-    /* Tabs (Chrome-like) — التاب نفسه ملون */
-    .tabs{display:flex;gap:10px;flex-wrap:wrap;padding:10px 0 14px}
-    .tab{
-      --accent:#5b6cff;
-      position:relative;padding:14px 20px;border:1px solid var(--line);border-bottom:none;
-      background:color-mix(in oklab, var(--accent) 12%, #ffffff);
-      border-top-left-radius:18px;border-top-right-radius:18px;font-weight:900;cursor:pointer;
-      box-shadow:0 6px 20px rgba(2,6,23,.06);transform:translateY(6px);opacity:.94;color:#0b1220;
+    .nav-tabs{display:flex;overflow-x:auto;gap:6px;background:var(--tabbar);
+      padding:6px;border-radius:12px;box-shadow:0 4px 14px rgba(0,0,0,.15)}
+    .nav-tab{flex:0 0 auto;border:0;cursor:pointer;
+      padding:10px 16px;border-radius:10px;
+      background:transparent;color:#f1f5f9;font-weight:700;font-size:14px}
+    .nav-tab.active{background:#fff;color:var(--ink);box-shadow:inset 0 0 0 2px #e6e9f2}
+
+    section{background:var(--card);margin-top:12px;padding:16px;border-radius:14px;
+      box-shadow:0 1px 3px rgba(0,0,0,.08)}
+    .hide{display:none !important}
+
+    .card{background:var(--card);border:1px solid var(--line);
+      border-radius:12px;padding:14px;margin-bottom:14px}
+    .grid{display:grid;gap:12px}
+    .grid.two{grid-template-columns:1fr 1fr}
+    .grid.three{grid-template-columns:1fr 1fr 1fr}
+    @media(max-width:768px){
+      .grid.two,.grid.three{grid-template-columns:1fr}
+      .nav-tab{font-size:13px;padding:8px 12px}
+      .title{font-size:18px}
     }
-    .tab .dot{width:10px;height:10px;border-radius:999px;display:inline-block;margin-inline-end:8px;background:var(--accent)}
-    .tab:hover{opacity:1}
-    .tab.active{
-      background:color-mix(in oklab, var(--accent) 22%, #ffffff);
-      border-color:color-mix(in oklab, var(--accent) 45%, var(--line));
-      transform:translateY(0);opacity:1;
-      outline:3px solid color-mix(in oklab, var(--accent) 18%, transparent)
-    }
-    .tab[data-s="tasks"]{--accent:var(--tab-tasks)}
-    .tab[data-s="prices"]{--accent:var(--tab-prices)}
-    .tab[data-s="orders"]{--accent:var(--tab-orders)}
-    .tab[data-s="finance"]{--accent:var(--tab-finance)}
-    .tab[data-s="clients"]{--accent:var(--tab-clients)}
-    .tab[data-s="inventory"]{--accent:var(--tab-inventory)}
 
-    /* Cards / sections */
-    .card{
-      background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
-      box-shadow:var(--shadow);padding:16px;margin:0 0 18px
-    }
-    /* كل قسم بياخد لون الخلفية الخاص بيه */
-    .section[data-s="tasks"]{background:var(--sec-tasks)}
-    .section[data-s="prices"]{background:var(--sec-prices)}
-    .section[data-s="orders"]{background:var(--sec-orders)}
-    .section[data-s="finance"]{background:var(--sec-finance)}
-    .section[data-s="clients"]{background:var(--sec-clients)}
-    .section[data-s="inventory"]{background:var(--sec-inventory)}
+    input,select,textarea{width:100%;padding:10px;border:1px solid var(--line);
+      border-radius:10px;font-size:14px;background:#fff}
+    input::placeholder{color:#94a3b8}
+    textarea{min-height:84px;resize:vertical}
 
-    .row-flex{display:flex;gap:10px;flex-wrap:wrap}
-    .row-flex>*{flex:1 1 160px}
-    input,select,textarea,button{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:#fff;font-size:14px;outline:none}
-    textarea{min-height:72px;resize:vertical}
-    button{cursor:pointer;font-weight:800}
-    .btn{color:#fff;border:none;background:linear-gradient(135deg, var(--accent), color-mix(in oklab,var(--accent) 60%, #8be9ff))}
-    .btn-ghost{background:#f3f4f6}
-    .danger{background:linear-gradient(135deg,#ef4444,#f87171);color:#fff;border:none}
+    .btn{padding:10px 16px;border:0;border-radius:10px;font-weight:700;cursor:pointer;font-size:14px}
+    .btn.brand{background:var(--brand);color:#fff}
+    .btn.ok{background:var(--ok);color:#fff}
+    .btn.red{background:var(--danger);color:#fff}
+    .btn.ghost{background:#eef2ff;color:#1e293b}
 
-    .list{display:flex;flex-direction:column;gap:10px;margin-top:12px}
-    .item{display:flex;gap:10px;align-items:flex-start;background:#fff;border:1px solid var(--line);padding:12px;border-radius:12px}
-    .item-title{font-weight:800}
-    .item-sub{color:var(--muted);font-size:12px}
+    /* Tasks */
+    .task{display:flex;gap:10px;align-items:flex-start;
+      background:var(--soft-blue);padding:12px;border-radius:12px;flex-wrap:wrap}
+    .task-done{background:var(--soft-green)}
+    .task .txt{flex:1;line-height:1.8}
 
-    /* Prices */
-    .price-big{font-size:22px;font-weight:900;letter-spacing:.2px}
+    /* Products */
+    .prod-card{border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:10px}
+    .prod-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+    .dist-row{display:grid;grid-template-columns:1fr 1fr auto;gap:8px;align-items:center}
 
-    /* Tasks states */
-    .item.task.active{background:var(--task-active-bg)}
-    .item.task.done{background:var(--task-done-bg)}
-    .item.task.done .item-title{ text-decoration: line-through; opacity:.85 }
+    /* Table (calc) */
+    .table-wrap{overflow-x:auto}
+    table{width:100%;border-collapse:collapse;margin-top:12px}
+    table thead{background:#f8fafc}
+    th,td{padding:10px;border-bottom:1px solid var(--line);text-align:center;font-size:14px;white-space:nowrap}
 
-    /* Finance 2-cols */
-    .two-col{display:grid;gap:14px}
-    @media(min-width:800px){ .two-col{grid-template-columns:1fr 1fr} }
-    .total{display:flex;justify-content:space-between;gap:10px;margin-top:8px;font-weight:900}
-    .net{display:flex;justify-content:center;gap:16px;align-items:center;margin-top:12px;padding:12px;border:1px dashed var(--line);border-radius:12px;background:#fafcff}
-
-    /* KPI */
-    .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:12px 0}
-    .kpi{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center}
-    .kpi .n{font-weight:900;font-size:20px}
-
-    .hide{display:none} .muted{color:var(--muted)}
-
-    /* Welcome (ضمان الاختفاء) */
-    #welcome{
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #2563EB;
-      color: #fff;
-      padding: 10px 20px;
-      border-radius: 10px;
-      font-size: 18px;
-      box-shadow: 0 10px 30px rgba(2,6,23,.15);
-      opacity: 0;
-      transition: opacity .25s ease;
-      z-index: 9999;
-      display: none;
-    }
-    #welcome.show{ display:block !important; opacity:1 !important; }
-    #welcome.hide{ display:none !important; opacity:0 !important; }
+    /* Toast */
+    .toast{position:fixed;inset-inline:0;top:14px;margin:auto;max-width:90%;
+      background:#0f172a;color:#fff;padding:12px 14px;border-radius:12px;
+      display:flex;justify-content:center;align-items:center;gap:10px;
+      transform:translateY(-30px);opacity:0;pointer-events:none;
+      transition:all .35s ease;z-index:9999;font-size:14px}
+    .toast.show{transform:translateY(0);opacity:1}
   </style>
 </head>
 <body>
+<div class="wrap">
+  <!-- الهيدر -->
   <div class="topbar">
-    <div class="wrap row">
-      <div class="brand"><div class="logo">L</div><h1>Lynka — لوحة الإدارة</h1></div>
-      <div style="margin-inline-start:auto;display:flex;align-items:center;gap:8px">
-        <span id="userEmail" class="muted" style="display:none;font-size:12px"></span>
-        <button id="logoutBtn" class="tab" style="--accent:#6b7280;padding:8px 14px;transform:none;border-bottom:1px solid var(--line)">تسجيل الخروج</button>
-      </div>
-    </div>
-    <div class="wrap tabs" id="tabs">
-      <div class="tab active" data-s="tasks"><span class="dot"></span>المهام</div>
-      <div class="tab" data-s="prices"><span class="dot"></span>الأسعار</div>
-      <div class="tab" data-s="orders"><span class="dot"></span>الأوردرات</div>
-      <div class="tab" data-s="finance"><span class="dot"></span>مصروفات وأرباح</div>
-      <div class="tab" data-s="clients"><span class="dot"></span>العملاء</div>
-      <div class="tab" data-s="inventory"><span class="dot"></span>المخزون</div>
-    </div>
+    <div class="title">لوحة الإدارة — <b>Lynka</b></div>
+    <div class="user-pill" id="userPill" title="اضغط لتسجيل الخروج"><span id="userEmail">غير مسجل</span></div>
   </div>
 
-  <!-- Auth -->
-  <div class="wrap" id="authCard" style="margin-top:16px">
-    <div class="card section" data-s="tasks" style="text-align:center">
-      <h2 style="margin:6px 0 12px">تسجيل دخول Lynka</h2>
-      <div class="row-flex">
-        <input id="email" placeholder="1@lynka.com أو 2@lynka.com" />
-        <input id="password" type="password" placeholder="••••••••" />
-        <button class="btn" id="loginBtn" style="--accent:#5b6cff">دخول</button>
-      </div>
-      <div id="authMsg" class="muted" style="margin-top:8px;color:#b91c1c"></div>
-    </div>
+  <!-- التبويبات -->
+  <div class="nav-tabs" id="navTabs">
+    <button class="nav-tab" data-s="tasks">📝 المهام</button>
+    <button class="nav-tab" data-s="products">🏷️ المنتجات</button>
+    <button class="nav-tab" data-s="calc">📊 الحساب</button>
+    <button class="nav-tab" data-s="orders">🧾 الأوردرات</button>
+    <button class="nav-tab" data-s="finance">💹 مصروفات وأرباح</button>
+    <button class="nav-tab" data-s="clients">👥 العملاء</button>
+    <button class="nav-tab" data-s="inventory">📦 المخزون</button>
+    <button class="nav-tab active" data-s="auth">🔐 الدخول</button>
   </div>
 
-  <!-- Welcome (يظهر 1 ثانية ويختفي أكيد) -->
-  <div id="welcome">Welcome Steven and Nassef</div>
-
-  <div class="wrap hide" id="app" style="margin-top:16px">
-    <div class="kpis">
-      <div class="kpi"><div class="muted" style="font-size:12px">مهام نشطة</div><div class="n" id="kpiTasks">0</div></div>
-      <div class="kpi"><div class="muted" style="font-size:12px">طلبات</div><div class="n" id="kpiOrders">0</div></div>
-      <div class="kpi"><div class="muted" style="font-size:12px">إجمالي أرباح</div><div class="n" id="kpiRev">0</div></div>
-      <div class="kpi"><div class="muted" style="font-size:12px">إجمالي مصروفات</div><div class="n" id="kpiExp">0</div></div>
-    </div>
-
-    <!-- TASKS -->
-    <section id="s-tasks" class="card section" data-s="tasks">
-      <h3 style="margin-top:0">قائمة المهام</h3>
-      <div class="row-flex">
-        <textarea id="taskText" placeholder="اكتب مهمة (يسمح بنص طويل)…"></textarea>
-        <select id="taskTag" title="اختياري">
-          <option value="">— وسم (اختياري | optional) —</option>
-          <option>مهم</option><option>عميل</option><option>توصيل</option>
-        </select>
-        <input type="date" id="taskDue" placeholder="تاريخ (اختياري | optional)" title="اختياري">
-        <button class="btn" id="addTask" style="--accent:var(--tab-tasks)">إضافة</button>
-        <button class="btn-ghost" id="clearSelectedTasks">حذف المحدد</button>
-      </div>
-
-      <div class="row-flex" style="margin-top:10px">
-        <input id="taskSearch" placeholder="بحث… (اختياري | optional)" />
-        <select id="taskFilter">
-          <option value="all">الكل</option>
-          <option value="today">اليوم</option>
-          <option value="overdue">متأخرة</option>
-          <option value="tag">حسب الوسم</option>
-        </select>
-      </div>
-
-      <h4 style="margin:16px 0 6px">المهام النشطة</h4>
-      <div class="list" id="tasksActive"></div>
-
-      <h4 style="margin:22px 0 6px">المهام المُنجزة</h4>
-      <div class="list" id="tasksDone"></div>
-    </section>
-
-    <!-- PRICES -->
-    <section id="s-prices" class="card section" data-s="prices">
-      <h3 style="margin-top:0">الأسعار</h3>
-      <div class="row-flex">
-        <input id="pName" placeholder="اسم المنتج" />
-        <input id="pRetail" type="number" step="0.01" placeholder="سعر التجزئة" />
-        <input id="pWholesale" type="number" step="0.01" placeholder="سعر الجملة (اختياري | optional)" />
-        <select id="pUnit"><option>قطعة</option><option>علبة</option><option>كيلو</option></select>
-        <button class="btn" id="addPrice" style="--accent:var(--tab-prices)">إضافة</button>
-      </div>
-      <div class="list" id="pricesList"></div>
-    </section>
-
-    <!-- ORDERS -->
-    <section id="s-orders" class="card section" data-s="orders">
-      <h3 style="margin-top:0">الأوردرات</h3>
-      <div class="row-flex">
-        <input id="oClient" placeholder="اسم العميل (اختياري | optional)" />
-        <input id="oTitle" placeholder="وصف مختصر للطلب" />
-        <input id="oAmount" type="number" step="0.01" placeholder="الإجمالي (اختياري | optional)" />
-        <select id="oStatus"><option>جديد</option><option>قيد التنفيذ</option><option>تم</option><option>ملغي</option></select>
-        <button class="btn" id="addOrder" style="--accent:var(--tab-orders)">إضافة</button>
-      </div>
-      <div class="list" id="ordersList"></div>
-    </section>
-
-    <!-- FINANCE -->
-    <section id="s-finance" class="card section" data-s="finance">
-      <h3 style="margin-top:0">مصروفات وأرباح</h3>
-      <div class="two-col">
-        <!-- Expenses -->
+  <!-- الدخول -->
+  <section id="s-auth">
+    <div class="card grid">
+      <h2 style="margin:0 0 6px">تسجيل دخول Lynka</h2>
+      <div class="grid two">
         <div>
-          <div class="row-flex">
-            <input id="exCat" placeholder="فئة المصروف" />
-            <input id="exAmount" type="number" step="0.01" placeholder="القيمة" />
-            <input id="exNote" placeholder="ملاحظات (اختياري | optional)" />
-            <button class="btn" id="addExpense" style="--accent:var(--tab-finance)">إضافة</button>
-          </div>
-          <div class="list" id="expensesList"></div>
-          <div class="total"><span>إجمالي المصروفات</span><span id="expTotal">0</span></div>
+          <label>البريد الإلكتروني</label>
+          <input id="inEmail" type="email" placeholder="1@lynka.com أو 2@lynka.com">
         </div>
-
-        <!-- Revenues -->
         <div>
-          <div class="row-flex">
-            <input id="revCat" placeholder="فئة الربح" />
-            <input id="revAmount" type="number" step="0.01" placeholder="القيمة" />
-            <input id="revNote" placeholder="ملاحظات (اختياري | optional)" />
-            <button class="btn" id="addRevenue" style="--accent:var(--tab-finance)">إضافة</button>
-          </div>
-          <div class="list" id="revenuesList"></div>
-          <div class="total"><span>إجمالي الأرباح</span><span id="revTotal">0</span></div>
+          <label>كلمة المرور</label>
+          <input id="inPass" type="password" placeholder="87654321">
         </div>
       </div>
-
-      <div class="net">
-        <div class="muted">صافي الربح:</div>
-        <div id="netTotal" style="font-weight:900">0</div>
+      <div class="row" style="display:flex;gap:10px;align-items:center">
+        <button class="btn brand" id="btnLogin">دخول</button>
+        <div id="authErr" class="muted" style="color:#ef4444"></div>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- CLIENTS -->
-    <section id="s-clients" class="card section" data-s="clients">
-      <h3 style="margin-top:0">العملاء</h3>
-      <div class="row-flex">
-        <input id="cName" placeholder="الاسم" />
-        <input id="cPhone" placeholder="الموبايل (اختياري | optional)" />
-        <input id="cEmail" placeholder="البريد (اختياري | optional)" />
-        <input id="cAddress" placeholder="العنوان (اختياري | optional)" />
-        <input id="cNote" placeholder="ملاحظات (اختياري | optional)" />
-        <button class="btn" id="addClient" style="--accent:var(--tab-clients)">إضافة</button>
+  <!-- المهام -->
+  <section id="s-tasks" class="hide">
+    <div class="grid two">
+      <div class="card">
+        <h3 style="margin-top:0">أضف مهمة</h3>
+        <div class="grid">
+          <textarea id="taskText" placeholder="اكتب مهمة (يسمح بنص طويل)…"></textarea>
+          <input id="taskTag" placeholder="التصنيف (اختياري)">
+          <div class="row">
+            <button class="btn brand" id="addTask">إضافة</button>
+          </div>
+        </div>
       </div>
-      <div class="list" id="clientsList"></div>
-    </section>
-
-    <!-- INVENTORY -->
-    <section id="s-inventory" class="card section" data-s="inventory">
-      <h3 style="margin-top:0">المخزون</h3>
-      <div class="row-flex">
-        <input id="iName" placeholder="اسم المنتج" />
-        <input id="iQty" type="number" step="1" placeholder="الكمية" />
-        <input id="iMin" type="number" step="1" placeholder="حد التنبيه (اختياري | optional)" />
-        <input id="iSupplier" placeholder="المورد (اختياري | optional)" />
-        <button class="btn" id="addInv" style="--accent:var(--tab-inventory)">إضافة</button>
+      <div class="card">
+        <div class="row" style="justify-content:space-between">
+          <h3 style="margin:0">المهام المُنجزة</h3>
+          <div class="muted">عدد: <span id="doneCount">0</span></div>
+        </div>
+        <div class="list" id="doneList"></div>
       </div>
-      <div class="list" id="invList"></div>
-    </section>
-  </div>
+    </div>
+    <div class="card" style="margin-top:12px">
+      <div class="row" style="justify-content:space-between">
+        <h3 style="margin:0">المهام النشطة</h3>
+        <div class="muted">عدد: <span id="activeCount">0</span></div>
+      </div>
+      <div class="list" id="tasksList"></div>
+    </div>
+  </section>
 
-  <!-- Firebase (Compat) -->
-  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
-  <script>
-    // إعداداتك الحالية (سيبها زي ما هي)
-    const firebaseConfig = {
-      apiKey: "AIzaSyCnM6-7BoICLWAXUeH8qz8A_OCiCGpQtMU",
-      authDomain: "lynka-to-do-list-eb2ac.firebaseapp.com",
-      projectId: "lynka-to-do-list-eb2ac",
-      storageBucket: "lynka-to-do-list-eb2ac.firebasestorage.app",
-      messagingSenderId: "202285237255",
-      appId: "1:202285237255:web:c12e66369d033e4ecd96a2"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db   = firebase.firestore();
+  <!-- المنتجات -->
+  <section id="s-products" class="hide">
+    <div class="card">
+      <h3 style="margin-top:0">إضافة منتج</h3>
+      <div class="grid three">
+        <input id="pName" placeholder="اسم المنتج">
+        <input id="pFactory" type="number" step="0.01" placeholder="سعر المصنع">
+        <input id="pQty" type="number" step="1" placeholder="الكمية">
+      </div>
+      <div class="grid two" style="margin-top:8px">
+        <input id="pDistName" placeholder="اسم موزّع (اختياري)">
+        <input id="pDistPrice" type="number" step="0.01" placeholder="سعر الموزّع (اختياري)">
+      </div>
+      <div class="row" style="margin-top:8px">
+        <button class="btn brand" id="addProduct">إضافة المنتج</button>
+      </div>
+    </div>
 
-    // Helpers
-    const $ = s => document.querySelector(s);
-    const show = el => el.classList.remove('hide');
-    const hide = el => el.classList.add('hide');
-    const fmt = n => (Number(n||0)).toLocaleString('en-US',{maximumFractionDigits:2}); // English numbers
+    <div id="productsList" class="grid"></div>
+  </section>
 
-    // Tabs
-    const tabs = document.querySelectorAll('.tab');
-    tabs.forEach(t=>t.addEventListener('click',()=>{
-      tabs.forEach(x=>x.classList.remove('active'));
-      t.classList.add('active');
-      document.querySelectorAll('section[id^="s-"]').forEach(s=>hide(s));
-      show($('#s-'+t.dataset.s));
-    }));
+  <!-- الحساب -->
+  <section id="s-calc" class="hide">
+    <div class="card">
+      <div class="row" style="justify-content:space-between;flex-wrap:wrap">
+        <h3 style="margin:0">الحساب حسب الموزّع</h3>
+        <div class="row">
+          <label class="muted">اختر الموزّع:</label>
+          <select id="distSelect"></select>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>المنتج</th>
+              <th>سعر المصنع</th>
+              <th>الكمية</th>
+              <th>سعر الموزّع</th>
+              <th>إجمالي المصنع</th>
+              <th>إجمالي الموزّع</th>
+            </tr>
+          </thead>
+          <tbody id="calcTable"></tbody>
+        </table>
+      </div>
+      <div class="row" style="justify-content:center;margin-top:12px;gap:20px;font-weight:800">
+        <div>إجمالي المصنع: <span id="totFactory">0</span></div>
+        <div>إجمالي الموزّع: <span id="totDist">0</span></div>
+        <div>الفرق (الربح): <span id="totDiff">0</span></div>
+      </div>
+    </div>
+  </section>
 
-    // Welcome (1s, guaranteed)
-    function showWelcome(duration = 1000){
-      const el = document.getElementById('welcome');
-      if(!el) return;
-      el.classList.remove('hide');
-      el.classList.add('show');
-      setTimeout(()=>{
-        el.classList.remove('show');
-        el.classList.add('hide');   // display:none
-      }, duration);
-    }
+  <!-- الأوردرات -->
+  <section id="s-orders" class="hide">
+    <div class="card">
+      <h3 style="margin:0">إضافة أوردر</h3>
+      <div class="grid two">
+        <input id="oClient" placeholder="اسم العميل">
+        <input id="oAmount" type="number" step="0.01" placeholder="القيمة">
+      </div>
+      <div class="row" style="margin-top:8px">
+        <button class="btn brand" id="addOrder">إضافة</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="row" style="justify-content:space-between">
+        <h3 style="margin:0">الأوردرات</h3>
+        <div class="row"><b>الإجمالي: </b>&nbsp;<span id="sumOrders">0</span></div>
+      </div>
+      <div id="ordersList" class="list"></div>
+    </div>
+  </section>
 
-    // Auth
-    $('#loginBtn').onclick = async()=>{
-      $('#authMsg').textContent='';
-      try{
-        await auth.signInWithEmailAndPassword($('#email').value.trim(), $('#password').value.trim());
-      }catch(e){ $('#authMsg').textContent = 'Firebase: '+(e.message||'خطأ'); }
-    };
-    auth.onAuthStateChanged(u=>{
-      if(u){
-        hide($('#authCard')); show($('#app'));
-        $('#userEmail').textContent = u.email; $('#userEmail').style.display='inline'; $('#logoutBtn').style.display='inline';
-        initApp();
-        showWelcome(1000); // ثانية واحدة فقط
-      } else {
-        show($('#authCard')); hide($('#app'));
-        $('#userEmail').style.display='none'; $('#logoutBtn').style.display='none';
-      }
+  <!-- المصروفات والأرباح -->
+  <section id="s-finance" class="hide">
+    <div class="grid two">
+      <div class="card">
+        <h3 style="margin:0">المصروفات</h3>
+        <div class="grid two">
+          <input id="exDesc" placeholder="وصف (اختياري)">
+          <input id="exAmount" type="number" step="0.01" placeholder="المبلغ">
+        </div>
+        <div class="row" style="margin-top:8px">
+          <button class="btn red" id="addExpense">إضافة</button>
+        </div>
+        <div id="expList" class="list" style="margin-top:8px"></div>
+        <div class="card" style="margin-top:8px"><b>إجمالي المصروفات: </b><span id="sumExp">0</span></div>
+      </div>
+
+      <div class="card">
+        <h3 style="margin:0">الأرباح</h3>
+        <div class="grid two">
+          <input id="prDesc" placeholder="وصف (اختياري)">
+          <input id="prAmount" type="number" step="0.01" placeholder="المبلغ">
+        </div>
+        <div class="row" style="margin-top:8px">
+          <button class="btn ok" id="addProfit">إضافة</button>
+        </div>
+        <div id="proList" class="list" style="margin-top:8px"></div>
+        <div class="card" style="margin-top:8px"><b>إجمالي الأرباح: </b><span id="sumPro">0</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- العملاء -->
+  <section id="s-clients" class="hide">
+    <div class="card">
+      <h3 style="margin:0">إضافة عميل</h3>
+      <div class="grid two">
+        <input id="cName" placeholder="اسم العميل">
+        <input id="cPhone" placeholder="هاتف (اختياري)">
+      </div>
+      <div class="row" style="margin-top:8px">
+        <button class="btn brand" id="addClient">إضافة</button>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="margin:0">قائمة العملاء</h3>
+      <div id="clientsList" class="list" style="margin-top:8px"></div>
+    </div>
+  </section>
+
+  <!-- المخزون -->
+  <section id="s-inventory" class="hide">
+    <div class="card">
+      <h3 style="margin:0">إضافة صنف مخزون</h3>
+      <div class="grid three">
+        <input id="iName" placeholder="اسم المنتج">
+        <input id="iQty" type="number" step="1" placeholder="الكمية">
+        <input id="iMin" type="number" step="1" placeholder="حد التنبيه (اختياري)">
+      </div>
+      <div class="row" style="margin-top:8px">
+        <button class="btn brand" id="addInv">إضافة</button>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="margin:0">المخزون</h3>
+      <div id="invList" class="list" style="margin-top:8px"></div>
+    </div>
+  </section>
+</div>
+
+<!-- رسالة الترحيب (مرة واحدة لمدة ثانية) -->
+<div id="welcomeToast" class="toast">👋 Welcome <b>Steven</b> and <b>Nassef</b></div>
+
+<!-- Firebase v12 (modular) -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+  import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, doc, deleteDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+  /* ===== Firebase Config ===== */
+  const firebaseConfig = {
+    apiKey: "AIzaSyCnM6-7BoICLWAXUeH8qz8A_OCiCGpQtMU",
+    authDomain: "lynka-to-do-list-eb2ac.firebaseapp.com",
+    projectId: "lynka-to-do-list-eb2ac",
+    storageBucket: "lynka-to-do-list-eb2ac.firebasestorage.app",
+    messagingSenderId: "202285237255",
+    appId: "1:202285237255:web:c12e66369d033e4ecd96a2"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db   = getFirestore(app);
+
+  /* ===== Helpers ===== */
+  const $  = s=>document.querySelector(s);
+  const $$ = s=>document.querySelectorAll(s);
+  const en = n => (Number(n||0)).toLocaleString('en-US',{maximumFractionDigits:2});
+  const escapeHtml = s => String(s).replace(/[&<>"']/g,m=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#039;" }[m]));
+
+  // Toast ترحيب مرة واحدة بعد أول تسجيل دخول
+  const toast = $('#welcomeToast');
+  function welcomeOnce(){
+    if(!localStorage.getItem('lynka_welcomed')){
+      toast.classList.add('show');
+      setTimeout(()=>toast.classList.remove('show'),1000);
+      setTimeout(()=>toast.remove(),1600);
+      localStorage.setItem('lynka_welcomed','1');
+    } else { toast.remove(); }
+  }
+
+  // Tabs
+  const tabs = $$('#navTabs .nav-tab');
+  const sections = $$('section[id^="s-"]');
+  function showSection(key){
+    tabs.forEach(t=>t.classList.toggle('active', t.dataset.s===key));
+    sections.forEach(s=>s.classList.toggle('hide', s.id!=='s-'+key));
+    sessionStorage.setItem('lynka_tab', key);
+  }
+  tabs.forEach(t=>t.addEventListener('click',()=>showSection(t.dataset.s)));
+  // ابدأ دومًا بـ شاشة الدخول لحد ما الـ Auth يثبت
+  showSection('auth');
+
+  // Auth
+  const userPill = $('#userPill'); const userEmail = $('#userEmail');
+  $('#btnLogin')?.addEventListener('click', async ()=>{
+    const email=$('#inEmail').value.trim();
+    const pass =$('#inPass').value.trim();
+    $('#authErr').textContent='';
+    try{ await signInWithEmailAndPassword(auth,email,pass); }
+    catch(e){ $('#authErr').textContent='خطأ: '+(e.code||e.message); }
+  });
+  userPill.addEventListener('click', async ()=>{ if(auth.currentUser) await signOut(auth); });
+
+  /* ===== Firestore Collections ===== */
+  const colTasks   = collection(db,'lynka_tasks');
+  const colProds   = collection(db,'lynka_products');
+  const colOrders  = collection(db,'lynka_orders');
+  const colExp     = collection(db,'lynka_expenses');
+  const colPro     = collection(db,'lynka_profits');
+  const colClients = collection(db,'lynka_clients');
+  const colInv     = collection(db,'lynka_inventory');
+
+  /* ===== Unsub management & attach after login ===== */
+  let unsubscribers = [];
+  let listenersAttached = false;
+  function detachAll(){
+    unsubscribers.forEach(u=>{ try{u()}catch{} });
+    unsubscribers = [];
+    listenersAttached = false;
+    // فضّي الواجهات
+    ['#tasksList','#doneList','#productsList','#ordersList','#expList','#proList','#clientsList','#invList','#calcTable']
+      .forEach(sel=>{ const el=$(sel); if(el) el.innerHTML=''; });
+    ['#activeCount','#doneCount','#sumOrders','#sumExp','#sumPro','#totFactory','#totDist','#totDiff']
+      .forEach(sel=>{ const el=$(sel); if(el) el.textContent='0'; });
+    $('#distSelect').innerHTML='';
+  }
+
+  let allProducts = [];
+
+  function attachAll(){
+    if(listenersAttached) return;
+    listenersAttached = true;
+
+    // ===== Tasks =====
+    const unsubTasks = onSnapshot(query(colTasks,orderBy('createdAt','desc')),(snap)=>{
+      const tasksList=$('#tasksList'), doneList=$('#doneList');
+      tasksList.innerHTML=''; doneList.innerHTML='';
+      let a=0, d=0;
+      snap.forEach(s=>{
+        const data=s.data(); const el=taskItem(s.id,data);
+        if(data.done){ d++; doneList.appendChild(el); } else { a++; tasksList.appendChild(el); }
+      });
+      $('#activeCount').textContent=a; $('#doneCount').textContent=d;
     });
-    $('#logoutBtn').onclick=()=>auth.signOut();
+    unsubscribers.push(unsubTasks);
 
-    // Collections
-    const col = {
-      tasks: db.collection('tasks'),
-      products: db.collection('products'),
-      orders: db.collection('orders'),
-      expenses: db.collection('expenses'),
-      revenues: db.collection('revenues'),
-      clients: db.collection('clients'),
-      inventory: db.collection('inventory'),
-    };
+    // ===== Products =====
+    const unsubProds = onSnapshot(query(colProds,orderBy('createdAt','desc')),(snap)=>{
+      allProducts = [];
+      const wrap = $('#productsList'); wrap.innerHTML='';
+      const distSet = new Set();
+      snap.forEach(s=>{
+        const data = s.data(); allProducts.push({id:s.id, ...data});
+        Object.keys(data.distributors||{}).forEach(k=>distSet.add(k));
+        wrap.appendChild(productCard(s.id,data));
+      });
+      const sel = $('#distSelect');
+      const current = sel.value;
+      sel.innerHTML = [...distSet].sort().map(n=>`<option value="${n}">${n}</option>`).join('');
+      if([...distSet].includes(current)) sel.value=current;
+      renderCalc();
+    });
+    unsubscribers.push(unsubProds);
 
-    // ================= TASKS =================
-    $('#addTask').onclick = async()=>{
-      const text = $('#taskText').value.trim(); if(!text) return;
-      await col.tasks.add({
-        text, done:false, tag:$('#taskTag').value||'', due:$('#taskDue').value||'',
-        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-        updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    // ===== Orders =====
+    const unsubOrders = onSnapshot(query(colOrders,orderBy('createdAt','desc')),(snap)=>{
+      const L=$('#ordersList'); L.innerHTML=''; let sum=0;
+      snap.forEach(s=>{
+        const d=s.data(); sum+=Number(d.amount)||0;
+        const row=document.createElement('div'); row.className='card row';
+        row.innerHTML = `<div class="big">${escapeHtml(d.client)}</div>
+                         <div class="big">${en(d.amount)}</div>
+                         <button class="btn red">حذف</button>`;
+        row.querySelector('.btn.red').addEventListener('click',()=>deleteDoc(doc(db,'lynka_orders',s.id)));
+        L.appendChild(row);
       });
-      $('#taskText').value=''; $('#taskTag').value=''; $('#taskDue').value='';
-    };
-    $('#clearSelectedTasks').onclick = ()=>{
-      document.querySelectorAll('.taskSel:checked').forEach(ch=>{
-        col.tasks.doc(ch.dataset.id).delete();
-      });
-    };
-    const isOverdue = due=>{
-      if(!due) return false;
-      const today = new Date().toISOString().slice(0,10);
-      return due < today;
-    };
-    function renderTask(doc, container){
-      const d = doc.data();
-      const row = document.createElement('div');
-      row.className = 'item task ' + (d.done ? 'done' : 'active');
-      row.innerHTML = `
-        <input type="checkbox" class="taskSel" data-id="${doc.id}">
-        <div style="flex:1">
-          <div class="item-title">${(d.text||'').replace(/\n/g,'<br>')}</div>
-          <div class="item-sub">
-            ${d.tag?`<span class="item-sub">#${d.tag}</span>`:''}
-            ${d.due?` • <span class="item-sub" style="color:${(!d.done && isOverdue(d.due))?'#b91c1c':'inherit'}">${d.due}</span>`:''}
-          </div>
-        </div>
-        <div class="item-sub" style="display:grid;gap:6px">
-          <button class="btn-ghost" data-act="toggle">${d.done?'غير مُنجزة':'إنهاء'}</button>
-          <button class="danger" data-act="del">حذف</button>
-        </div>`;
-      row.querySelector('[data-act="toggle"]').onclick=()=>col.tasks.doc(doc.id).update({done:!d.done, updatedAt:firebase.firestore.FieldValue.serverTimestamp()});
-      row.querySelector('[data-act="del"]').onclick=()=>col.tasks.doc(doc.id).delete();
-      container.appendChild(row);
-    }
-    function loadTasks(){
-      const A=$('#tasksActive'), D=$('#tasksDone');
-      const s = $('#taskSearch').value.trim();
-      col.tasks.orderBy('createdAt','desc').onSnapshot(ss=>{
-        A.innerHTML=''; D.innerHTML=''; let active=0;
-        ss.forEach(doc=>{
-          const d=doc.data();
-          if(s && !String(d.text).includes(s)) return;
-          const target = d.done ? D : A;
-          renderTask(doc, target);
-          if(!d.done) active++;
-        });
-        $('#kpiTasks').textContent = fmt(active);
-      });
-    }
-    $('#taskSearch').oninput = loadTasks;
+      $('#sumOrders').textContent=en(sum);
+    });
+    unsubscribers.push(unsubOrders);
 
-    // ================= PRICES =================
-    $('#addPrice').onclick = async()=>{
-      const name=$('#pName').value.trim(); if(!name) return;
-      await col.products.add({
-        name, unit:$('#pUnit').value,
-        retail: Number($('#pRetail').value||0),
-        wholesale: Number($('#pWholesale').value||0),
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    // ===== Expenses =====
+    const unsubExp = onSnapshot(query(colExp,orderBy('createdAt','desc')),(snap)=>{
+      const L=$('#expList'); L.innerHTML=''; let sum=0;
+      snap.forEach(s=>{
+        const d=s.data(); sum+=Number(d.amount)||0;
+        const row=document.createElement('div'); row.className='card row';
+        row.innerHTML = `<div>${d.desc?escapeHtml(d.desc):'<span class="muted">بدون وصف</span>'}</div>
+                         <div class="big">${en(d.amount)}</div>
+                         <button class="btn red">حذف</button>`;
+        row.querySelector('.btn.red').addEventListener('click',()=>deleteDoc(doc(db,'lynka_expenses',s.id)));
+        L.appendChild(row);
       });
-      $('#pName').value=''; $('#pRetail').value=''; $('#pWholesale').value='';
-    };
-    function loadPrices(){
-      const L=$('#pricesList'); L.innerHTML='';
-      col.products.orderBy('createdAt','desc').onSnapshot(ss=>{
-        L.innerHTML='';
-        ss.forEach(doc=>{
-          const d=doc.data();
-          const el=document.createElement('div');
-          el.className='item';
-          el.innerHTML=`
-            <div style="flex:1">
-              <div class="item-title">${d.name} <span class="item-sub">(${d.unit||'Unit'})</span></div>
-              <div class="item-sub">Wholesale: <b>${fmt(d.wholesale)}</b></div>
-            </div>
-            <div class="price-big">${fmt(d.retail)}</div>
-            <button class="danger">حذف</button>`;
-          el.querySelector('button').onclick=()=>col.products.doc(doc.id).delete();
-          L.appendChild(el);
-        });
-      });
-    }
+      $('#sumExp').textContent=en(sum);
+    });
+    unsubscribers.push(unsubExp);
 
-    // ================= ORDERS =================
-    $('#addOrder').onclick = async()=>{
-      const client=$('#oClient').value.trim();
-      const title=$('#oTitle').value.trim();
-      const amount=Number($('#oAmount').value||0);
-      await col.orders.add({
-        client, title, amount, status:$('#oStatus').value,
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    // ===== Profits =====
+    const unsubPro = onSnapshot(query(colPro,orderBy('createdAt','desc')),(snap)=>{
+      const L=$('#proList'); L.innerHTML=''; let sum=0;
+      snap.forEach(s=>{
+        const d=s.data(); sum+=Number(d.amount)||0;
+        const row=document.createElement('div'); row.className='card row';
+        row.innerHTML = `<div>${d.desc?escapeHtml(d.desc):'<span class="muted">بدون وصف</span>'}</div>
+                         <div class="big">${en(d.amount)}</div>
+                         <button class="btn red">حذف</button>`;
+        row.querySelector('.btn.red').addEventListener('click',()=>deleteDoc(doc(db,'lynka_profits',s.id)));
+        L.appendChild(row);
       });
-      $('#oClient').value=''; $('#oTitle').value=''; $('#oAmount').value='';
-    };
-    function loadOrders(){
-      const L=$('#ordersList');
-      col.orders.orderBy('createdAt','desc').onSnapshot(ss=>{
-        L.innerHTML=''; let count=0;
-        ss.forEach(doc=>{
-          const d=doc.data(); count++;
-          const el=document.createElement('div');
-          el.className='item';
-          el.innerHTML=`
-            <div style="flex:1">
-              <div class="item-title">${d.title||'طلب'}</div>
-              <div class="item-sub">عميل: <b>${d.client||'-'}</b> • حالة: <b>${d.status}</b> • إجمالي: <b>${fmt(d.amount)}</b></div>
-            </div>
-            <div class="item-sub" style="display:grid;gap:6px">
-              <button class="btn-ghost" data-act="done">إنهاء</button>
-              <button class="danger" data-act="del">حذف</button>
-            </div>`;
-          el.querySelector('[data-act="done"]').onclick=()=>col.orders.doc(doc.id).update({status:'تم'});
-          el.querySelector('[data-act="del"]').onclick=()=>col.orders.doc(doc.id).delete();
-          L.appendChild(el);
-        });
-        $('#kpiOrders').textContent = fmt(count);
-      });
-    }
+      $('#sumPro').textContent=en(sum);
+    });
+    unsubscribers.push(unsubPro);
 
-    // ================= FINANCE =================
-    $('#addExpense').onclick = async()=>{
-      const cat=$('#exCat').value.trim(); const amount=Number($('#exAmount').value||0);
-      await col.expenses.add({
-        category:cat, amount, note:$('#exNote').value.trim(),
-        date: firebase.firestore.FieldValue.serverTimestamp()
-      });
-      $('#exCat').value=''; $('#exAmount').value=''; $('#exNote').value='';
-    };
-    $('#addRevenue').onclick = async()=>{
-      const cat=$('#revCat').value.trim(); const amount=Number($('#revAmount').value||0);
-      await col.revenues.add({
-        category:cat, amount, note:$('#revNote').value.trim(),
-        date: firebase.firestore.FieldValue.serverTimestamp()
-      });
-      $('#revCat').value=''; $('#revAmount').value=''; $('#revNote').value='';
-    };
-    function financeRow(d, del){
-      const el=document.createElement('div');
-      el.className='item';
-      el.innerHTML=`
-        <div style="flex:1">
-          <div class="item-title">${d.category||'-'}</div>
-          <div class="item-sub">${d.note||''}</div>
-        </div>
-        <div style="font-weight:900">${fmt(d.amount)}</div>
-        <button class="danger">حذف</button>`;
-      el.querySelector('button').onclick = del;
-      return el;
-    }
-    function updateNet(){
-      const rev = Number(($('#revTotal').textContent||'0').replace(/,/g,''))||0;
-      const exp = Number(($('#expTotal').textContent||'0').replace(/,/g,''))||0;
-      $('#netTotal').textContent = fmt(rev - exp);
-    }
-    function loadExpenses(){
-      const L=$('#expensesList'); L.innerHTML='';
-      col.expenses.orderBy('date','desc').onSnapshot(ss=>{
-        L.innerHTML=''; let sum=0;
-        ss.forEach(doc=>{
-          const d=doc.data(); sum += Number(d.amount)||0;
-          L.appendChild(financeRow(d, ()=>col.expenses.doc(doc.id).delete()));
-        });
-        $('#expTotal').textContent = fmt(sum);
-        $('#kpiExp').textContent  = fmt(sum);
-        updateNet();
-      });
-    }
-    function loadRevenues(){
-      const L=$('#revenuesList'); L.innerHTML='';
-      col.revenues.orderBy('date','desc').onSnapshot(ss=>{
-        L.innerHTML=''; let sum=0;
-        ss.forEach(doc=>{
-          const d=doc.data(); sum += Number(d.amount)||0;
-          L.appendChild(financeRow(d, ()=>col.revenues.doc(doc.id).delete()));
-        });
-        $('#revTotal').textContent = fmt(sum);
-        $('#kpiRev').textContent  = fmt(sum);
-        updateNet();
-      });
-    }
-
-    // ================= CLIENTS =================
-    $('#addClient').onclick=async()=>{
-      const name=$('#cName').value.trim(); if(!name) return;
-      await col.clients.add({
-        name, phone:$('#cPhone').value.trim(), email:$('#cEmail').value.trim(),
-        address:$('#cAddress').value.trim(), note:$('#cNote').value.trim(),
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
-      ['#cName','#cPhone','#cEmail','#cAddress','#cNote'].forEach(s=>$(s).value='');
-    };
-    function loadClients(){
+    // ===== Clients =====
+    const unsubClients = onSnapshot(query(colClients,orderBy('createdAt','desc')),(snap)=>{
       const L=$('#clientsList'); L.innerHTML='';
-      col.clients.orderBy('createdAt','desc').onSnapshot(ss=>{
-        L.innerHTML='';
-        ss.forEach(doc=>{
-          const d=doc.data();
-          const el=document.createElement('div'); el.className='item';
-          el.innerHTML=`
-            <div style="flex:1">
-              <div class="item-title">${d.name}</div>
-              <div class="item-sub">${d.phone||''} • ${d.email||''} • ${d.address||''}</div>
-              <div class="item-sub">${d.note||''}</div>
-            </div>
-            <button class="danger">حذف</button>`;
-          el.querySelector('button').onclick=()=>col.clients.doc(doc.id).delete();
-          L.appendChild(el);
-        });
+      snap.forEach(s=>{
+        const d=s.data();
+        const row=document.createElement('div'); row.className='card row';
+        row.innerHTML = `<div class="big">${escapeHtml(d.name)}</div>
+                         <div>${d.phone?escapeHtml(d.phone):'<span class="muted">—</span>'}</div>
+                         <button class="btn red">حذف</button>`;
+        row.querySelector('.btn.red').addEventListener('click',()=>deleteDoc(doc(db,'lynka_clients',s.id)));
+        L.appendChild(row);
       });
-    }
+    });
+    unsubscribers.push(unsubClients);
 
-    // ================= INVENTORY =================
-    $('#addInv').onclick=async()=>{
-      const name=$('#iName').value.trim(); if(!name) return;
-      await col.inventory.add({
-        name, qty:Number($('#iQty').value||0), min:Number($('#iMin').value||0),
-        supplier:$('#iSupplier').value.trim(),
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
-      ['#iName','#iQty','#iMin','#iSupplier'].forEach(s=>$(s).value='');
-    };
-    function loadInventory(){
+    // ===== Inventory =====
+    const unsubInv = onSnapshot(query(colInv,orderBy('createdAt','desc')),(snap)=>{
       const L=$('#invList'); L.innerHTML='';
-      col.inventory.orderBy('createdAt','desc').onSnapshot(ss=>{
-        L.innerHTML='';
-        ss.forEach(doc=>{
-          const d=doc.data();
-          const low = (Number(d.qty)||0) <= (Number(d.min)||0);
-          const el=document.createElement('div'); el.className='item';
-          el.innerHTML=`
-            <div style="flex:1">
-              <div class="item-title">${d.name} ${low?'<span class="item-sub" style="color:#b91c1c">• منخفض</span>':''}</div>
-              <div class="item-sub">كمية: <b>${fmt(d.qty)}</b> • حد التنبيه: <b>${fmt(d.min)}</b> • المورد: ${d.supplier||'-'}</div>
-            </div>
-            <div class="item-sub" style="display:grid;gap:6px">
-              <button class="btn-ghost" data-act="inc">+1</button>
-              <button class="btn-ghost" data-act="dec">-1</button>
-              <button class="danger" data-act="del">حذف</button>
-            </div>`;
-          el.querySelector('[data-act="inc"]').onclick=()=>col.inventory.doc(doc.id).update({qty:(Number(d.qty)||0)+1});
-          el.querySelector('[data-act="dec"]').onclick=()=>col.inventory.doc(doc.id).update({qty:Math.max(0,(Number(d.qty)||0)-1)});
-          el.querySelector('[data-act="del"]').onclick=()=>col.inventory.doc(doc.id).delete();
-          L.appendChild(el);
-        });
+      snap.forEach(s=>{
+        const d=s.data(); const low=(Number(d.qty)||0) <= (Number(d.min)||0);
+        const row=document.createElement('div'); row.className='card row';
+        row.innerHTML = `<div class="big">${escapeHtml(d.name)} ${low?'<span class="muted" style="color:#b91c1c">• منخفض</span>':''}</div>
+                         <div class="big">${en(d.qty)}</div>
+                         <button class="btn ghost" data-act="inc">+1</button>
+                         <button class="btn ghost" data-act="dec">-1</button>
+                         <button class="btn red">حذف</button>`;
+        row.querySelector('[data-act="inc"]').addEventListener('click',()=>updateDoc(doc(db,'lynka_inventory',s.id),{qty:(Number(d.qty)||0)+1}));
+        row.querySelector('[data-act="dec"]').addEventListener('click',()=>updateDoc(doc(db,'lynka_inventory',s.id),{qty:Math.max(0,(Number(d.qty)||0)-1)}));
+        row.querySelector('.btn.red').addEventListener('click',()=>deleteDoc(doc(db,'lynka_inventory',s.id)));
+        L.appendChild(row);
       });
-    }
+    });
+    unsubscribers.push(unsubInv);
+  }
 
-    // Init
-    function initApp(){
-      loadTasks(); loadPrices(); loadOrders();
-      loadExpenses(); loadRevenues();
-      loadClients(); loadInventory();
+  /* ===== UI builders & handlers that لا تشتغل إلا بعد login ===== */
+  function requireAuth(){ if(!auth.currentUser){ showSection('auth'); throw new Error('not-authenticated'); } }
+
+  // Task element factory
+  function taskItem(id,d){
+    const el = document.createElement('div');
+    el.className = 'task'+(d.done?' task-done':'');
+    el.innerHTML = `
+      <input type="checkbox" ${d.done?'checked':''} />
+      <div class="txt"><div>${escapeHtml(d.text)}</div><small class="muted">${d.tag?('#'+escapeHtml(d.tag)):'—'}</small></div>
+      <button class="btn red">حذف</button>`;
+    el.querySelector('input').addEventListener('change',()=>{ requireAuth(); updateDoc(doc(db,'lynka_tasks',id),{done:!d.done}); });
+    el.querySelector('.btn.red').addEventListener('click',()=>{ requireAuth(); deleteDoc(doc(db,'lynka_tasks',id)); });
+    return el;
+  }
+
+  // Buttons (نضيف حراسة requireAuth)
+  $('#addTask').addEventListener('click', async ()=>{
+    try{
+      requireAuth();
+      const text = $('#taskText').value.trim();
+      const tag  = $('#taskTag').value.trim() || null;
+      if(!text) return;
+      await addDoc(colTasks,{text,tag,done:false,createdAt:serverTimestamp()});
+      $('#taskText').value=''; $('#taskTag').value='';
+    }catch{}
+  });
+
+  $('#addProduct').addEventListener('click', async ()=>{
+    try{
+      requireAuth();
+      const name = $('#pName').value.trim();
+      const factory = parseFloat(($('#pFactory').value||'').toString().replace(',','.'));
+      const qty = parseInt($('#pQty').value||'0',10);
+      const dname = $('#pDistName').value.trim();
+      const dprice = parseFloat(($('#pDistPrice').value||'').toString().replace(',','.'));
+      if(!name || isNaN(factory) || !qty) return;
+      const distributors = {};
+      if(dname && !isNaN(dprice)) distributors[dname]=dprice;
+      await addDoc(colProds,{name, factory, qty, distributors, createdAt:serverTimestamp()});
+      ['#pName','#pFactory','#pQty','#pDistName','#pDistPrice'].forEach(s=>$(s).value='');
+    }catch{}
+  });
+
+  function productCard(id,d){
+    const card = document.createElement('div'); card.className='prod-card';
+    card.innerHTML = `
+      <div class="prod-head">
+        <div class="big">${escapeHtml(d.name)}</div>
+        <div class="row">
+          <button class="btn ghost" data-act="save">حفظ</button>
+          <button class="btn red" data-act="del">حذف المنتج</button>
+        </div>
+      </div>
+      <div class="grid three">
+        <div><label class="muted">سعر المصنع</label><input type="number" step="0.01" value="${d.factory??0}" data-f="factory"></div>
+        <div><label class="muted">الكمية</label><input type="number" step="1" value="${d.qty??0}" data-f="qty"></div>
+        <div><label class="muted">إضافة موزّع</label><div class="row"><input placeholder="اسم" data-add-name><input type="number" step="0.01" placeholder="السعر" data-add-price><button class="btn brand" data-act="addDist">إضافة</button></div></div>
+      </div>
+      <div><label class="muted">موزّعين</label><div class="list" data-dists></div></div>
+    `;
+    // render distributors
+    const distsWrap = card.querySelector('[data-dists]'); distsWrap.innerHTML='';
+    Object.entries(d.distributors||{}).forEach(([name,price])=>{
+      const row = document.createElement('div'); row.className='dist-row';
+      row.innerHTML = `
+        <input value="${escapeHtml(name)}" data-dn>
+        <input type="number" step="0.01" value="${price}" data-dp>
+        <div class="row">
+          <button class="btn ghost" data-act="updDist">تحديث</button>
+          <button class="btn red" data-act="delDist">حذف</button>
+        </div>`;
+      row.querySelector('[data-act="updDist"]').addEventListener('click', async ()=>{
+        try{
+          requireAuth();
+          const newName = row.querySelector('[data-dn]').value.trim();
+          const newPrice= parseFloat((row.querySelector('[data-dp]').value||'').toString().replace(',','.'));
+          if(!newName || isNaN(newPrice)) return;
+          const newMap = {...(d.distributors||{})};
+          delete newMap[name]; newMap[newName]=newPrice;
+          await updateDoc(doc(db,'lynka_products',id),{distributors:newMap});
+        }catch{}
+      });
+      row.querySelector('[data-act="delDist"]').addEventListener('click', async ()=>{
+        try{
+          requireAuth();
+          const newMap = {...(d.distributors||{})};
+          delete newMap[name];
+          await updateDoc(doc(db,'lynka_products',id),{distributors:newMap});
+        }catch{}
+      });
+      distsWrap.appendChild(row);
+    });
+
+    // Add distributor
+    card.querySelector('[data-act="addDist"]').addEventListener('click', async ()=>{
+      try{
+        requireAuth();
+        const n = card.querySelector('[data-add-name]').value.trim();
+        const p = parseFloat((card.querySelector('[data-add-price]').value||'').toString().replace(',','.'));
+        if(!n || isNaN(p)) return;
+        const newMap = {...(d.distributors||{})}; newMap[n]=p;
+        await updateDoc(doc(db,'lynka_products',id),{distributors:newMap});
+        card.querySelector('[data-add-name]').value=''; card.querySelector('[data-add-price]').value='';
+      }catch{}
+    });
+
+    // Save factory/qty
+    card.querySelector('[data-act="save"]').addEventListener('click', async ()=>{
+      try{
+        requireAuth();
+        const factory = parseFloat((card.querySelector('[data-f="factory"]').value||'').toString().replace(',','.'));
+        const qty     = parseInt(card.querySelector('[data-f="qty"]').value||'0',10);
+        if(isNaN(factory) || isNaN(qty)) return;
+        await updateDoc(doc(db,'lynka_products',id),{factory,qty});
+      }catch{}
+    });
+
+    // delete product
+    card.querySelector('[data-act="del"]').addEventListener('click', async ()=>{
+      try{ requireAuth(); await deleteDoc(doc(db,'lynka_products',id)); }catch{}
+    });
+
+    return card;
+  }
+
+  function renderCalc(){
+    const dist = $('#distSelect').value;
+    const body = $('#calcTable'); body.innerHTML='';
+    let totF=0, totD=0;
+    allProducts.forEach(p=>{
+      const priceD = (p.distributors||{})[dist];
+      if(priceD==null) return;
+      const f = (Number(p.factory)||0) * (Number(p.qty)||0);
+      const d = (Number(priceD)||0)    * (Number(p.qty)||0);
+      totF += f; totD += d;
+      body.insertAdjacentHTML('beforeend', `
+        <tr>
+          <td>${escapeHtml(p.name)}</td>
+          <td>${en(p.factory)}</td>
+          <td>${en(p.qty)}</td>
+          <td>${en(priceD)}</td>
+          <td>${en(f)}</td>
+          <td>${en(d)}</td>
+        </tr>`);
+    });
+    $('#totFactory').textContent = en(totF);
+    $('#totDist').textContent    = en(totD);
+    $('#totDiff').textContent    = en(totD - totF);
+  }
+  $('#distSelect').addEventListener('change', renderCalc);
+
+  $('#addOrder').addEventListener('click', async ()=>{
+    try{
+      requireAuth();
+      const client=$('#oClient').value.trim();
+      const amount=parseFloat(($('#oAmount').value||'').toString().replace(',','.'));
+      if(!client || isNaN(amount)) return;
+      await addDoc(colOrders,{client,amount,createdAt:serverTimestamp()});
+      $('#oClient').value=''; $('#oAmount').value='';
+    }catch{}
+  });
+
+  $('#addExpense').addEventListener('click', async ()=>{
+    try{
+      requireAuth();
+      const desc=$('#exDesc').value.trim()||null;
+      const amount=parseFloat(($('#exAmount').value||'').toString().replace(',','.'));
+      if(isNaN(amount)) return;
+      await addDoc(colExp,{desc,amount,createdAt:serverTimestamp()});
+      $('#exDesc').value=''; $('#exAmount').value='';
+    }catch{}
+  });
+  $('#addProfit').addEventListener('click', async ()=>{
+    try{
+      requireAuth();
+      const desc=$('#prDesc').value.trim()||null;
+      const amount=parseFloat(($('#prAmount').value||'').toString().replace(',','.'));
+      if(isNaN(amount)) return;
+      await addDoc(colPro,{desc,amount,createdAt:serverTimestamp()});
+      $('#prDesc').value=''; $('#prAmount').value='';
+    }catch{}
+  });
+
+  $('#addClient').addEventListener('click', async ()=>{
+    try{
+      requireAuth();
+      const name=$('#cName').value.trim(); const phone=$('#cPhone').value.trim()||null;
+      if(!name) return;
+      await addDoc(colClients,{name,phone,createdAt:serverTimestamp()});
+      $('#cName').value=''; $('#cPhone').value='';
+    }catch{}
+  });
+
+  $('#addInv').addEventListener('click', async ()=>{
+    try{
+      requireAuth();
+      const name=$('#iName').value.trim(); const qty=parseInt($('#iQty').value||'0',10);
+      const min=parseInt($('#iMin').value||'0',10);
+      if(!name || isNaN(qty)) return;
+      await addDoc(colInv,{name,qty,min:(isNaN(min)?0:min),createdAt:serverTimestamp()});
+      ['#iName','#iQty','#iMin'].forEach(s=>$(s).value='');
+    }catch{}
+  });
+
+  // Auth state gate: اربط/افصل الـ listeners حسب الدخول
+  onAuthStateChanged(auth, u=>{
+    if(u){
+      userEmail.textContent = u.email;
+      welcomeOnce();
+      showSection(sessionStorage.getItem('lynka_tab') || 'tasks');
+      attachAll();
+    }else{
+      userEmail.textContent = 'غير مسجل';
+      detachAll();
+      showSection('auth');
     }
-  </script>
+  });
+</script>
 </body>
 </html>
