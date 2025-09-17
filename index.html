@@ -10,16 +10,16 @@
     --ink:#0b1220; --muted:#64748b; --line:#e5e7eb; --card:#fff; --bg:#f6f8fc;
     --shadow:0 10px 30px rgba(2,6,23,.08); --r:16px;
     /* تبويبات */
-    --t-prices:#4F7DF7; --t-calc:#10B981; --t-orders:#7C3AED; --t-finance:#0EA5E9; --t-clients:#F97316;
+    --t-products:#4F7DF7; --t-calc:#10B981; --t-orders:#7C3AED; --t-finance:#0EA5E9; --t-clients:#F97316;
     /* خلفيات خفيفة لكل تبويب */
-    --s-prices:#EAF4FF; --s-calc:#E9FFF1; --s-orders:#F2E8FF; --s-finance:#E7F7FF; --s-clients:#FFF1E8;
+    --s-products:#EAF4FF; --s-calc:#E9FFF1; --s-orders:#F2E8FF; --s-finance:#E7F7FF; --s-clients:#FFF1E8;
   }
   *{box-sizing:border-box}
   html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"Cairo",system-ui}
   .wrap{max-width:1100px;margin:auto;padding:0 14px}
 
   /* شريط علوي */
-  .top{position:sticky;top:0;z-index:50;background:linear-gradient(#fff,rgba(255,255,255,.9));backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  .top{position:sticky;top:0;z-index:30;background:linear-gradient(#fff,rgba(255,255,255,.9));backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
   .top .row{display:flex;align-items:center;gap:10px;padding:10px 0}
   .brand{display:flex;align-items:center;gap:10px}
   .logo{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;
@@ -36,18 +36,19 @@
        background:color-mix(in oklab, var(--c) 14%, #fff); transform:translateY(6px); box-shadow:var(--shadow); opacity:.95}
   .tab.active{transform:translateY(0); background:color-mix(in oklab, var(--c) 22%, #fff); outline:3px solid color-mix(in oklab, var(--c) 18%, transparent)}
   .tab .dot{display:inline-block;width:10px;height:10px;border-radius:999px;background:var(--c);margin-inline-end:8px}
-  .tab[data-s="prices"]{--c:var(--t-prices)} .tab[data-s="calc"]{--c:var(--t-calc)}
-  .tab[data-s="orders"]{--c:var(--t-orders)} .tab[data-s="finance"]{--c:var(--t-finance)}
+  .tab[data-s="products"]{--c:var(--t-products)}
+  .tab[data-s="calc"]{--c:var(--t-calc)}
+  .tab[data-s="orders"]{--c:var(--t-orders)}
+  .tab[data-s="finance"]{--c:var(--t-finance)}
   .tab[data-s="clients"]{--c:var(--t-clients)}
 
   /* أقسام */
   section{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:14px;margin:0 0 16px}
-  .sec[data-s="prices"]{background:var(--s-prices)}
+  .sec[data-s="products"]{background:var(--s-products)}
   .sec[data-s="calc"]{background:var(--s-calc)}
   .sec[data-s="orders"]{background:var(--s-orders)}
   .sec[data-s="finance"]{background:var(--s-finance)}
   .sec[data-s="clients"]{background:var(--s-clients)}
-
   .grid{display:grid;gap:10px} .grid.two{grid-template-columns:1fr 1fr}
   .row{display:flex;gap:10px;flex-wrap:wrap} .row>*{flex:1 1 160px}
   input,select,textarea,button{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:#fff;font-size:14px}
@@ -62,9 +63,21 @@
   .title{font-weight:900} .muted{color:var(--muted)} .hide{display:none}
   .price-big{font-size:20px;font-weight:900}
 
+  /* شاشة الدخول Fullscreen */
+  .auth-screen{
+    position:fixed; inset:0; z-index:40; background:
+      radial-gradient(1200px 600px at 80% -10%, #dbedff 0%, transparent 60%),
+      radial-gradient(1000px 600px at -10% 100%, #eafbf3 0%, transparent 60%),
+      #ffffff;
+    display:grid; place-items:center; border-bottom:1px solid var(--line);
+  }
+  .auth-card{width:min(92vw,560px); background:#fff; border:1px solid var(--line); border-radius:18px; box-shadow:var(--shadow); padding:18px}
+  .auth-title{display:flex;align-items:center;gap:10px;justify-content:center;margin-bottom:10px}
+  .auth-logo{width:54px;height:54px;border-radius:14px;background:linear-gradient(135deg,#5b6cff,#19c6d1);display:grid;place-items:center;color:#fff;font-weight:900;box-shadow:var(--shadow)}
+
   /* Toast ترحيب ثانية واحدة */
   #welcome{position:fixed;top:18px;left:50%;transform:translateX(-50%);background:#2563EB;color:#fff;
-           padding:10px 16px;border-radius:12px;box-shadow:var(--shadow);opacity:0;display:none;z-index:9999}
+           padding:10px 16px;border-radius:12px;box-shadow:var(--shadow);opacity:0;display:none;z-index:50}
   #welcome.show{display:block;opacity:1}
   #welcome.hide{display:none !important;opacity:0 !important}
 
@@ -73,137 +86,142 @@
 </head>
 <body>
 
-<div class="top">
-  <div class="wrap row">
-    <div class="brand"><div class="logo">L</div><h1>Lynka — لوحة الإدارة</h1></div>
-    <div class="user">
-      <span id="userMail" class="pill hide"></span>
-      <button id="logoutBtn" class="logout hide">تسجيل الخروج</button>
+<!-- شاشة الدخول (أول صفحة) -->
+<div id="auth" class="auth-screen">
+  <div class="auth-card">
+    <div class="auth-title">
+      <div class="auth-logo">L</div>
+      <h2 style="margin:0">تسجيل دخول Lynka</h2>
     </div>
-  </div>
-  <div class="wrap tabs" id="tabs">
-    <div class="tab active" data-s="prices"><span class="dot"></span>الأسعار</div>
-    <div class="tab" data-s="calc"><span class="dot"></span>الحساب</div>
-    <div class="tab" data-s="orders"><span class="dot"></span>الأوردرات</div>
-    <div class="tab" data-s="finance"><span class="dot"></span>مصروفات وأرباح</div>
-    <div class="tab" data-s="clients"><span class="dot"></span>العملاء</div>
-  </div>
-</div>
-
-<!-- كرت الدخول -->
-<div class="wrap" id="authWrap" style="margin-top:14px">
-  <section class="sec card" data-s="prices" style="text-align:center">
-    <h2 style="margin:6px 0 12px">تسجيل دخول Lynka</h2>
     <div class="row">
       <input id="email" placeholder="1@lynka.com أو 2@lynka.com">
       <input id="pass" type="password" placeholder="87654321">
       <button class="btn" style="--c:#4F7DF7" id="loginBtn">دخول</button>
     </div>
     <div id="authErr" class="muted" style="margin-top:6px;color:#b91c1c"></div>
-  </section>
+  </div>
 </div>
 
 <!-- Toast -->
 <div id="welcome">Welcome Steven and Nassef</div>
 
 <!-- التطبيق -->
-<div class="wrap hide" id="app" style="margin-top:14px">
-
-  <!-- PRICES -->
-  <section id="s-prices" class="sec" data-s="prices">
-    <h3 style="margin:0 0 10px">الأسعار (المنتجات + الموزعين)</h3>
-    <div class="row">
-      <input id="pName" placeholder="اسم المنتج">
-      <input id="pFactory" type="number" step="0.01" placeholder="سعر المصنع">
-      <input id="pQty" type="number" step="1" placeholder="الكمية">
-      <select id="pUnit"><option>قطعة</option><option>علبة</option><option>كيلو</option></select>
-    </div>
-    <div class="row" style="margin-top:8px">
-      <input id="pDistName" placeholder="اسم موزّع (اختياري)">
-      <input id="pDistPrice" type="number" step="0.01" placeholder="سعر الموزّع (اختياري)">
-      <button class="btn" style="--c:var(--t-prices)" id="addProduct">إضافة المنتج</button>
-    </div>
-
-    <div id="productsList" class="grid" style="margin-top:12px"></div>
-  </section>
-
-  <!-- CALC -->
-  <section id="s-calc" class="sec" data-s="calc">
-    <h3 style="margin:0 0 10px">الحساب حسب الموزّع</h3>
-    <div class="row">
-      <select id="distSelect"></select>
-    </div>
-    <div class="card">
-      <div class="grid" style="gap:8px">
-        <div class="row" style="font-weight:900">
-          <div>إجمالي المصنع: <span id="totFactory">0</span></div>
-          <div>إجمالي الموزّع: <span id="totDist">0</span></div>
-          <div>الفرق (الربح): <span id="totDiff">0</span></div>
-        </div>
-        <div class="list" id="calcList"></div>
+<div id="app" class="hide">
+  <div class="top">
+    <div class="wrap row">
+      <div class="brand"><div class="logo">L</div><h1>Lynka — لوحة الإدارة</h1></div>
+      <div class="user">
+        <span id="userMail" class="pill hide"></span>
+        <button id="logoutBtn" class="logout hide">تسجيل الخروج</button>
       </div>
     </div>
-  </section>
-
-  <!-- ORDERS -->
-  <section id="s-orders" class="sec" data-s="orders">
-    <h3 style="margin:0 0 10px">الأوردرات</h3>
-    <div class="row">
-      <input id="oClient" placeholder="اسم العميل (اختياري)">
-      <input id="oTitle"  placeholder="وصف مختصر">
-      <input id="oAmount" type="number" step="0.01" placeholder="الإجمالي (اختياري)">
-      <select id="oStatus"><option>جديد</option><option>قيد التنفيذ</option><option>تم</option><option>ملغي</option></select>
-      <button class="btn" style="--c:var(--t-orders)" id="addOrder">إضافة</button>
+    <div class="wrap tabs" id="tabs">
+      <div class="tab active" data-s="products"><span class="dot"></span>المنتجات</div>
+      <div class="tab" data-s="calc"><span class="dot"></span>الحساب</div>
+      <div class="tab" data-s="orders"><span class="dot"></span>الأوردرات</div>
+      <div class="tab" data-s="finance"><span class="dot"></span>مصروفات وأرباح</div>
+      <div class="tab" data-s="clients"><span class="dot"></span>العملاء</div>
     </div>
-    <div class="list" id="ordersList" style="margin-top:10px"></div>
-  </section>
+  </div>
 
-  <!-- FINANCE -->
-  <section id="s-finance" class="sec" data-s="finance">
-    <h3 style="margin:0 0 10px">مصروفات وأرباح</h3>
-    <div class="grid two">
-      <div class="card">
-        <div class="row">
-          <input id="exCat" placeholder="فئة المصروف">
-          <input id="exAmount" type="number" step="0.01" placeholder="القيمة">
-          <input id="exNote" placeholder="ملاحظات (اختياري)">
-          <button class="btn" style="--c:var(--t-finance)" id="addExpense">إضافة</button>
-        </div>
-        <div class="list" id="expList" style="margin-top:10px"></div>
-        <div class="row" style="font-weight:900;justify-content:space-between"><span>إجمالي المصروفات</span><span id="sumExp">0</span></div>
+  <div class="wrap" style="margin-top:14px">
+
+    <!-- PRODUCTS -->
+    <section id="s-products" class="sec" data-s="products">
+      <h3 style="margin:0 0 10px">المنتجات + الموزعين</h3>
+      <div class="row">
+        <input id="pName"      placeholder="اسم المنتج">
+        <input id="pFactory"   type="number" step="0.01" placeholder="سعر المصنع">
+        <input id="pQty"       type="number" step="1" placeholder="الكمية">
+        <select id="pUnit"><option>قطعة</option><option>علبة</option><option>كيلو</option></select>
+      </div>
+      <div class="row" style="margin-top:8px">
+        <input id="pDistName"  placeholder="اسم موزّع (اختياري)">
+        <input id="pDistPrice" type="number" step="0.01" placeholder="سعر الموزّع (اختياري)">
+        <button class="btn" style="--c:var(--t-products)" id="addProduct">إضافة المنتج</button>
+      </div>
+      <div id="productsList" class="grid" style="margin-top:12px"></div>
+    </section>
+
+    <!-- CALC -->
+    <section id="s-calc" class="sec" data-s="calc">
+      <h3 style="margin:0 0 10px">الحساب حسب الموزّع</h3>
+      <div class="row">
+        <select id="distSelect"></select>
       </div>
       <div class="card">
-        <div class="row">
-          <input id="revCat" placeholder="فئة الربح">
-          <input id="revAmount" type="number" step="0.01" placeholder="القيمة">
-          <input id="revNote" placeholder="ملاحظات (اختياري)">
-          <button class="btn" style="--c:var(--t-finance)" id="addRevenue">إضافة</button>
+        <div class="grid" style="gap:8px">
+          <div class="row" style="font-weight:900">
+            <div>إجمالي المصنع: <span id="totFactory">0</span></div>
+            <div>إجمالي الموزّع: <span id="totDist">0</span></div>
+            <div>الفرق (الربح): <span id="totDiff">0</span></div>
+          </div>
+          <div class="list" id="calcList"></div>
         </div>
-        <div class="list" id="revList" style="margin-top:10px"></div>
-        <div class="row" style="font-weight:900;justify-content:space-between"><span>إجمالي الأرباح</span><span id="sumRev">0</span></div>
       </div>
-    </div>
-    <div class="card" style="margin-top:10px;display:flex;gap:14px;justify-content:center;font-weight:900">
-      <div>صافي الربح: <span id="netTotal">0</span></div>
-    </div>
-  </section>
+    </section>
 
-  <!-- CLIENTS -->
-  <section id="s-clients" class="sec" data-s="clients">
-    <h3 style="margin:0 0 10px">العملاء</h3>
-    <div class="row">
-      <input id="cName" placeholder="الاسم">
-      <input id="cPhone" placeholder="الموبايل (اختياري)">
-      <input id="cEmail" placeholder="البريد (اختياري)">
-      <input id="cAddress" placeholder="العنوان (اختياري)">
-      <input id="cNote" placeholder="ملاحظات (اختياري)">
-      <button class="btn" style="--c:var(--t-clients)" id="addClient">إضافة</button>
-    </div>
-    <div class="list" id="clientsList" style="margin-top:10px"></div>
-  </section>
+    <!-- ORDERS -->
+    <section id="s-orders" class="sec" data-s="orders">
+      <h3 style="margin:0 0 10px">الأوردرات</h3>
+      <div class="row">
+        <input id="oClient" placeholder="اسم العميل (اختياري)">
+        <input id="oTitle"  placeholder="وصف مختصر">
+        <input id="oAmount" type="number" step="0.01" placeholder="الإجمالي (اختياري)">
+        <select id="oStatus"><option>جديد</option><option>قيد التنفيذ</option><option>تم</option><option>ملغي</option></select>
+        <button class="btn" style="--c:var(--t-orders)" id="addOrder">إضافة</button>
+      </div>
+      <div class="list" id="ordersList" style="margin-top:10px"></div>
+    </section>
+
+    <!-- FINANCE -->
+    <section id="s-finance" class="sec" data-s="finance">
+      <h3 style="margin:0 0 10px">مصروفات وأرباح</h3>
+      <div class="grid two">
+        <div class="card">
+          <div class="row">
+            <input id="exCat" placeholder="فئة المصروف">
+            <input id="exAmount" type="number" step="0.01" placeholder="القيمة">
+            <input id="exNote" placeholder="ملاحظات (اختياري)">
+            <button class="btn" style="--c:var(--t-finance)" id="addExpense">إضافة</button>
+          </div>
+          <div class="list" id="expList" style="margin-top:10px"></div>
+          <div class="row" style="font-weight:900;justify-content:space-between"><span>إجمالي المصروفات</span><span id="sumExp">0</span></div>
+        </div>
+        <div class="card">
+          <div class="row">
+            <input id="revCat" placeholder="فئة الربح">
+            <input id="revAmount" type="number" step="0.01" placeholder="القيمة">
+            <input id="revNote" placeholder="ملاحظات (اختياري)">
+            <button class="btn" style="--c:var(--t-finance)" id="addRevenue">إضافة</button>
+          </div>
+          <div class="list" id="revList" style="margin-top:10px"></div>
+          <div class="row" style="font-weight:900;justify-content:space-between"><span>إجمالي الأرباح</span><span id="sumRev">0</span></div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:10px;display:flex;gap:14px;justify-content:center;font-weight:900">
+        <div>صافي الربح: <span id="netTotal">0</span></div>
+      </div>
+    </section>
+
+    <!-- CLIENTS -->
+    <section id="s-clients" class="sec" data-s="clients">
+      <h3 style="margin:0 0 10px">العملاء</h3>
+      <div class="row">
+        <input id="cName" placeholder="الاسم">
+        <input id="cPhone" placeholder="الموبايل (اختياري)">
+        <input id="cEmail" placeholder="البريد (اختياري)">
+        <input id="cAddress" placeholder="العنوان (اختياري)">
+        <input id="cNote" placeholder="ملاحظات (اختياري)">
+        <button class="btn" style="--c:var(--t-clients)" id="addClient">إضافة</button>
+      </div>
+      <div class="list" id="clientsList" style="margin-top:10px"></div>
+    </section>
+
+  </div>
 </div>
 
-<!-- Firebase compat (نفس اللي كان شغال معاك) -->
+<!-- Firebase compat (نفس ما كان شغال معاك) -->
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
@@ -221,7 +239,7 @@
   const auth = firebase.auth();
   const db   = firebase.firestore();
 
-  /* ===== أدوات صغيرة ===== */
+  /* ===== Helpers ===== */
   const $ = s => document.querySelector(s);
   const $$= s => document.querySelectorAll(s);
   const show = el => el.classList.remove('hide');
@@ -236,9 +254,8 @@
     sessionStorage.setItem('lynka_tab', key);
   }
   tabs.forEach(t=>t.addEventListener('click',()=>showSec(t.dataset.s)));
-  showSec(sessionStorage.getItem('lynka_tab') || 'prices');
 
-  /* ===== Welcome toast (ثانية واحدة مؤكدة) ===== */
+  /* ===== Welcome toast (ثانية واحدة) ===== */
   function welcomeOnce(){
     const w = $('#welcome');
     if(!localStorage.getItem('lynka_welcomed')){
@@ -248,7 +265,7 @@
     }else{ w.remove(); }
   }
 
-  /* ===== Auth ===== */
+  /* ===== Auth (Fullscreen) ===== */
   $('#loginBtn').onclick = async()=>{
     $('#authErr').textContent='';
     try{
@@ -259,15 +276,17 @@
 
   auth.onAuthStateChanged(u=>{
     if(u){
-      hide($('#authWrap')); show($('#app'));
+      // إظهار التطبيق، إخفاء شاشة الدخول
+      hide($('#auth')); show($('#app'));
       $('#userMail').textContent=u.email; show($('#userMail')); show($('#logoutBtn'));
       welcomeOnce();
       initApp();  // ربط المستمعين بعد الدخول فقط
+      // افتح آخر تاب كان محفوظ أو المنتجات
+      showSec(sessionStorage.getItem('lynka_tab') || 'products');
     }else{
-      show($('#authWrap')); hide($('#app'));
+      // إظهار شاشة الدخول وإخفاء التطبيق
+      show($('#auth')); hide($('#app'));
       hide($('#userMail')); hide($('#logoutBtn'));
-      // فصل أي listeners قديمة بإعادة تحميل بسيطة لأمان تام في الأجهزة القديمة
-      // (اختياري) location.hash = '';
     }
   });
 
@@ -280,7 +299,7 @@
     clients:  db.collection('clients'),
   };
 
-  /* ===================== PRODUCTS / PRICES ===================== */
+  /* ===================== PRODUCTS ===================== */
   let allProducts = []; // لتوليد حساب الموزعين
   $('#addProduct').onclick = async()=>{
     const name = $('#pName').value.trim();
@@ -319,7 +338,7 @@
           <div class="row" style="margin-top:8px">
             <input placeholder="اسم موزّع" data-add-name>
             <input type="number" step="0.01" placeholder="سعر" data-add-price>
-            <button class="btn" style="--c:var(--t-prices)" data-act="addDist">إضافة</button>
+            <button class="btn" style="--c:var(--t-products)" data-act="addDist">إضافة</button>
           </div>
         </div>
       </div>`;
@@ -371,7 +390,7 @@
         Object.keys(d.distributors||{}).forEach(k=>set.add(k));
         list.appendChild(productCard(doc.id,d));
       });
-      // الموزعين للحساب
+      // تعبئة الموزعين للحساب
       const sel = $('#distSelect'); const current = sel.value;
       sel.innerHTML = [...set].sort().map(n=>`<option value="${n}">${n}</option>`).join('');
       if([...set].includes(current)) sel.value=current;
